@@ -1,11 +1,12 @@
-import { Container, Flex, Text } from "@mantine/core";
+import TestContainer from "@/components/common/test-container";
+import { Flex, Title } from "@mantine/core";
 
 export default function Auth () {
     return (
-        <Container>
-            <Flex mih="100vh" justify="center" align="center">
-                <Text c="dark.0">Auth Page</Text>
+        <TestContainer>
+            <Flex py="sm">
+                <Title order={6}>AUTH PAGE</Title>
             </Flex>
-        </Container>
+        </TestContainer>
     )
 }
