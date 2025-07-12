@@ -14,9 +14,9 @@ export default function RootLayout({children}: Readonly<{children: React.ReactNo
   return (
     <html lang="en" {...mantineHtmlProps}>
       <head>
-        <ColorSchemeScript />
+        <ColorSchemeScript defaultColorScheme="dark"/>
       </head>
-      <body className="antialiased bg-[var(--mantine-color-dark-9)]">
+      <body className="antialiased bg-dark-100 dark:bg-dark-900">
         <MantineProvider theme={theme} defaultColorScheme="dark">
           {children}
         </MantineProvider>
