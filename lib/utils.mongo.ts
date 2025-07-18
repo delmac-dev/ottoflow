@@ -15,9 +15,9 @@ export const getDb = async (onClose?: (client: MongoClient) => Promise<void>) =>
     const _db = client.db("portfolio");
 
     return {
+        A: _db.collection("accounts"),
         P: _db.collection("projects"),
-        C: _db.collection("cheatsheets"),
-        D: _db.collection("cheatsheet-data"),
+        B: _db.collection("boards"),
         [Symbol.asyncDispose]: async () => {
             await onClose?.(client)
         },
