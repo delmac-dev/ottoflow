@@ -12,7 +12,7 @@ export function _id(hex?: string) {
 }
 
 export const getDb = async (onClose?: (client: MongoClient) => Promise<void>) => {
-    const _db = client.db("portfolio");
+    const _db = client.db("ottoflow");
 
     return {
         A: _db.collection("accounts"),

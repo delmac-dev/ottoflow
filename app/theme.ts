@@ -14,7 +14,6 @@ const theme = createTheme({
         lg: "80rem",
         xl: "96rem",
     },
-    primaryColor: "green",
 });
 
 export default theme;

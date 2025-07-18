@@ -1,7 +1,8 @@
 import { z } from "zod";
 import * as Schema from './schema';
 
-export type ITest = z.infer<typeof Schema.ZSignIn>;
+export type ISignUp = z.infer<typeof Schema.ZSignUp>;
+export type ISignIn = z.infer<typeof Schema.ZSignIn>;
 
 export type IQuery = {
   params: {[key: string]: string}
