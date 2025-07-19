@@ -1,7 +1,9 @@
+"use server";
+
 import { IProject } from "../types";
 import { addTimeStamp } from "../utils";
 import { format, getDb } from "../utils.mongo";
-import { newBoard } from "./boards.actions";
+import { newBoard } from "./board.actions";
 
 type IEditProductInfo = Required<Pick<IProject, 'id' | 'name' | 'avatar' | 'color'>>;
 type IEditScheduleData = Required<Pick<IProject, 'id' | 'schedules'>>;
@@ -81,6 +83,13 @@ export async function editScheduleInfo(data: IEditScheduleInfo) {
 
   return "success";
 };
+
+export async function handlePrompt({prompt, fileUrl}:{prompt: string, fileUrl: string}) {
+
+  console.log({prompt, fileUrl});
+  
+  return "success";
+}
 
 export async function deleteProject({id}:{id: string}) {
 

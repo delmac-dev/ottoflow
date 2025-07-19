@@ -45,6 +45,7 @@ export default function Profile(user:User) {
               justify="start"
               variant="subtle"
               color="dark.1"
+              classNames={{label: "text-dark-200 group-hover:text-dark-100 font-normal", section: "text-dark-200 group-hover:text-dark-100", root: "group"}}
             >
               Edit your profile
             </Button>
@@ -67,9 +68,8 @@ export default function Profile(user:User) {
                     value={value}
                     label={label}
                     iconColor="dark.1"
-                    color="dark.7"
                     size="xs"
-                    classNames={{ radio: "bg-dark-600 border-0", label: "text-dark-100" }}
+                    classNames={{ radio: "bg-dark-600 border-0", label: "text-dark-200" }}
                   />
                 ))}
               </Stack>
@@ -84,6 +84,7 @@ export default function Profile(user:User) {
               variant="subtle"
               color="dark.1"
               px={"xs"}
+              classNames={{label: "text-dark-200 group-hover:text-dark-10 font-normal", section: "text-dark-200 group-hover:text-dark-100", root: "group"}}
               onClick={() => signOut({redirect: true, redirectTo: "/auth"})}
             >
               Logout

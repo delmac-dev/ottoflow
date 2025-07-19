@@ -3,7 +3,7 @@ import authConfig from "./auth.config";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { ZSignIn } from "./lib/schema";
-import { getAccountByEmail } from "./lib/actions/accounts.actions";
+import { getAccountByEmail } from "./lib/actions/account.actions";
 import { JWT } from "next-auth/jwt";
 
 declare module "next-auth/jwt" {

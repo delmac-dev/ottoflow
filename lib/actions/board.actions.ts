@@ -1,3 +1,5 @@
+"use server";
+
 import { IBoard } from "../types";
 import { addTimeStamp } from "../utils";
 import { format, getDb } from "../utils.mongo";

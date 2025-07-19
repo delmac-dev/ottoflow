@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 
 import "./globals.css";
 
-import { ColorSchemeScript, MantineProvider, mantineHtmlProps} from '@mantine/core';
-import theme from "./theme";
+import { ColorSchemeScript, mantineHtmlProps} from '@mantine/core';
+import { Providers } from "@/components/common/providers";
 
 export const metadata: Metadata = {
   title: "Ottoflow",
@@ -17,9 +17,9 @@ export default function RootLayout({children}: Readonly<{children: React.ReactNo
         <ColorSchemeScript defaultColorScheme="dark"/>
       </head>
       <body className="antialiased bg-dark-100 dark:bg-dark-900">
-        <MantineProvider theme={theme} defaultColorScheme="dark">
+        <Providers>
           {children}
-        </MantineProvider>
+        </Providers>
       </body>
     </html>
   );

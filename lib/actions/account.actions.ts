@@ -1,3 +1,5 @@
+"use server";
+
 import { IAccount } from "../types";
 import { format, getDb } from "../utils.mongo";
 

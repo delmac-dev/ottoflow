@@ -3,6 +3,7 @@ import * as Schema from './schema';
 
 export type ISignUp = z.infer<typeof Schema.ZSignUp>;
 export type ISignIn = z.infer<typeof Schema.ZSignIn>;
+export type IPromptAI = z.infer<typeof Schema.ZPromptAI>;
 
 export type IQuery = {
   params: {[key: string]: string}
