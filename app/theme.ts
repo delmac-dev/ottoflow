@@ -1,11 +1,11 @@
 import { createTheme, DEFAULT_THEME } from "@mantine/core";
-import { geistSans } from "./font";
+import { openSans } from "./font";
 
 const theme = createTheme({
-    fontFamily: `${geistSans.style.fontFamily}`,
-    fontFamilyMonospace: `${geistSans.style.fontFamily}, Monaco, Courier, monospace`,
+    fontFamily: `${openSans.style.fontFamily}`,
+    fontFamilyMonospace: `${openSans.style.fontFamily}, Monaco, Courier, monospace`,
     headings: {
-        fontFamily: `${geistSans.style.fontFamily}, ${DEFAULT_THEME.fontFamily}`,
+        fontFamily: `${openSans.style.fontFamily}, ${DEFAULT_THEME.fontFamily}`,
     },
     breakpoints: {
         xs: "40em",
