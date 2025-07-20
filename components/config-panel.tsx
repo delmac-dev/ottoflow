@@ -28,7 +28,7 @@ export default function ConfigPanel() {
       className="absolute w-full h-auto p-xs left-0 bottom-0 border-t border-dark-600"
     >
       <form onSubmit={aiForm.onSubmit(onSubmit)}>
-        <Stack gap={"xs"}>
+        <Stack gap={"xs"} className='bg-dark-800 p-xs rounded-md'>
           <Textarea
             autosize
             minRows={1}
