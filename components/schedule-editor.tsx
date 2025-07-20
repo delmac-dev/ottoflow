@@ -25,8 +25,9 @@ export default function ScheduleEditor() {
             <Title order={6} fw="normal">SCHEDULES</Title>
           </Group>
           <Group gap="xs">
-            {actionIcons.map(Icon => (
+            {actionIcons.map((Icon, index) => (
               <ActionIcon
+                key={index}
                 type="submit"
                 variant="subtle"
                 size="md"
