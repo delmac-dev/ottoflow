@@ -3,10 +3,10 @@ import { ZPromptAI } from '@/lib/schema';
 import { IPromptAI } from '@/lib/types';
 import { ActionIcon, Container, Group, Stack, Textarea } from '@mantine/core'
 import { useForm } from '@mantine/form';
-import { FilePlusIcon, SendHorizonalIcon } from 'lucide-react'
+import { PlusIcon, SendHorizonalIcon } from 'lucide-react'
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 
-export default function ConfigPanel() {
+export default function AIPanel() {
   const { mutate: handlePrompt, isPending } = useHandlePrompt();
   const aiForm = useForm({
     mode: 'uncontrolled',
@@ -23,21 +23,18 @@ export default function ConfigPanel() {
   };
 
   return (
-    <Container
-      fluid
-      className="absolute w-full h-auto p-xs left-0 bottom-0 border-t border-dark-600"
-    >
+    <Container fluid className="w-full h-auto p-xs bg-dark-900">
       <form onSubmit={aiForm.onSubmit(onSubmit)}>
-        <Stack gap={"xs"} className='bg-dark-800 p-xs rounded-md'>
+        <Stack className='bg-dark-800 p-xs rounded-md gap-2 border border-dark-600'>
           <Textarea
             autosize
             minRows={1}
-            maxRows={3}
+            maxRows={2}
             key={aiForm.key('prompt')}
             {...aiForm.getInputProps('prompt')}
             variant="unstyled"
             placeholder="Your prompt goes here"
-            size="xs"
+            size="sm"
             aria-label="ai-prompt"
           />
           <Group justify="space-between">
@@ -46,16 +43,16 @@ export default function ConfigPanel() {
               variant="subtle"
               size="md"
               color="dark"
-              className="hover:bg-dark-700"
+              className="bg-dark-600 hover:bg-dark-500"
             >
-              <FilePlusIcon className="size-4 text-dark-50" />
+              <PlusIcon className="size-5 text-dark-50" />
             </ActionIcon>
             <ActionIcon
               type="submit"
               variant="subtle"
               size="md"
               color="dark"
-              className="hover:bg-dark-700"
+              className="bg-dark-600 hover:bg-dark-500"
               loading={isPending}
             >
               <SendHorizonalIcon className="size-4 text-dark-50" />

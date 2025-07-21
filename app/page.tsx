@@ -26,11 +26,11 @@ export default async function Home() {
 
         <Profile {...session.user} />
       </Group>
-      <Group className="gap-0 h-[calc(100dvh_-_48px)]">
-        <Container fluid className="flex-1 max-w-xs h-full p-0 border-r border-dark-600">
+      <Group className="gap-0">
+        <Container fluid className="flex-1 max-w-sm p-0 border-r border-dark-600">
           <ScheduleEditor />
         </Container>
-        <Container fluid className="flex-1 h-full p-0">
+        <Container fluid className="flex-1 h-[calc(100dvh_-_48px)] p-0">
           <BoardEditor />
         </Container>
       </Group>
