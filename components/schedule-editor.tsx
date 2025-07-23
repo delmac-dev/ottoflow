@@ -26,62 +26,64 @@ export default function ScheduleEditor() {
   ];
 
   return (
-    <Stack className='h-[calc(100dvh_-_48px)] p-0 gap-0'>
-      <Tabs variant="none" value={value} onChange={setValue} className='relative flex flex-col flex-1 overflow-hidden' >
-        <Group justify='space-between' className='h-10 px-4 border-b border-dark-600'>
-          <Tabs.List ref={setRootRef} className="relative h-full gap-4">
-            <Tabs.Tab value="1" ref={setControlRef('1')} className="z-1 px-0">
-              <Text size='xs' className={cn('text-dark-200 font-semibold', value == "1" && "text-dark-100")}>Data</Text>
-            </Tabs.Tab>
-            <Tabs.Tab value="2" ref={setControlRef('2')} className="z-1 px-0">
-              <Text size='xs' className={cn('text-dark-200 font-semibold', value == "2" && "text-dark-100")}>Properties</Text>
-            </Tabs.Tab>
-            <FloatingIndicator 
-              className='before:absolute before:w-full before:h-0.5 before:bg-dark-100 before:rounded-t-sm before:bottom-0 before:left-0'
-              target={value ? controlsRefs[value] : null} 
-              parent={rootRef}
-            />
-          </Tabs.List>
-          {/* <Group gap="xs">
-            {actionIcons.map((Icon, index) => (
-              <ActionIcon
-                key={index}
-                type="submit"
-                variant="subtle"
-                size="md"
-                color="dark"
-                className="hover:bg-dark-500"
-              >
-                <Icon className="size-4 stroke-2 text-dark-50" />
-              </ActionIcon>
-            ))}
-          </Group> */}
-        </Group>
-        <Stack className='p-0 flex-1 overflow-y-auto'>
-          <Tabs.Panel value="1">
-            <Stack className='gap-0 p-0'>
-              {schedules.map((schedule) => (
-                <Stack key={schedule.id} className='w-full p-5 not-last:border-b border-dark-600'>
-                  {Object.entries(schedule).filter(([s]) => s !== "id").map(([key, value], index) => (
-                    <Group className='justify-between'>
-                      <Text className='text-xs text-dark-200 font-semibold'>{startCase(key)}</Text>
-                      <Text className='text-xs text-dark-50 font-semibold'>{value}</Text>
-                    </Group>
-                  ))}
-                </Stack>
+    <Container fluid className="w-full p-0 border-r border-dark-600">
+      <Stack className='h-[calc(100dvh_-_48px)] p-0 gap-0'>
+        <Tabs variant="none" value={value} onChange={setValue} className='relative flex flex-col flex-1 overflow-hidden' >
+          <Group justify='space-between' className='h-10 px-4 border-b border-dark-600'>
+            <Tabs.List ref={setRootRef} className="relative h-full gap-4">
+              <Tabs.Tab value="1" ref={setControlRef('1')} className="z-1 px-0">
+                <Text size='xs' className={cn('text-dark-200 font-bold', value == "1" && "text-dark-100")}>Data</Text>
+              </Tabs.Tab>
+              <Tabs.Tab value="2" ref={setControlRef('2')} className="z-1 px-0">
+                <Text size='xs' className={cn('text-dark-200 font-bold', value == "2" && "text-dark-100")}>Properties</Text>
+              </Tabs.Tab>
+              <FloatingIndicator 
+                className='before:absolute before:w-full before:h-0.5 before:bg-dark-100 before:rounded-t-sm before:bottom-0 before:left-0'
+                target={value ? controlsRefs[value] : null} 
+                parent={rootRef}
+              />
+            </Tabs.List>
+            {/* <Group gap="xs">
+              {actionIcons.map((Icon, index) => (
+                <ActionIcon
+                  key={index}
+                  type="submit"
+                  variant="subtle"
+                  size="md"
+                  color="dark"
+                  className="hover:bg-dark-500"
+                >
+                  <Icon className="size-4 stroke-2 text-dark-50" />
+                </ActionIcon>
               ))}
-            </Stack>
-          </Tabs.Panel>
-          <Tabs.Panel value="2">
-            <form>
-              <Stack className='p-4'>
-                <Text className='text-xs font-semibold text-dark-400 w-full text-center'>Properties Editor</Text>
+            </Group> */}
+          </Group>
+          <Stack className='p-0 flex-1 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'>
+            <Tabs.Panel value="1">
+              <Stack className='gap-0 p-0'>
+                {schedules.map((schedule) => (
+                  <Stack key={schedule.id} className='w-full p-5 not-last:border-b border-dark-600'>
+                    {Object.entries(schedule).filter(([s]) => s !== "id").map(([key, value], index) => (
+                      <Group key={index} className='justify-between'>
+                        <Text className='text-xs text-dark-200 font-semibold'>{startCase(key)}</Text>
+                        <Text className='text-xs text-dark-50 font-semibold'>{value}</Text>
+                      </Group>
+                    ))}
+                  </Stack>
+                ))}
               </Stack>
-            </form>
-          </Tabs.Panel>
-        </Stack>
-      </Tabs>
-      <AIPanel />
-    </Stack>
+            </Tabs.Panel>
+            <Tabs.Panel value="2">
+              <form>
+                <Stack className='p-4'>
+                  <Text className='text-xs font-semibold text-dark-400 w-full text-center'>Properties Editor</Text>
+                </Stack>
+              </form>
+            </Tabs.Panel>
+          </Stack>
+        </Tabs>
+        <AIPanel />
+      </Stack>
+    </Container>
   )
 }

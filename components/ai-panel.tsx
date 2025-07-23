@@ -3,7 +3,7 @@ import { ZPromptAI } from '@/lib/schema';
 import { IPromptAI } from '@/lib/types';
 import { ActionIcon, Container, Group, Stack, Textarea } from '@mantine/core'
 import { useForm } from '@mantine/form';
-import { PlusIcon, SendHorizonalIcon } from 'lucide-react'
+import { ImagePlusIcon, PlusIcon, SendHorizonalIcon } from 'lucide-react'
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 
 export default function AIPanel() {
@@ -45,7 +45,7 @@ export default function AIPanel() {
               color="dark"
               className="bg-dark-600 hover:bg-dark-500"
             >
-              <PlusIcon className="size-5 text-dark-50" />
+              <ImagePlusIcon className="size-5 text-dark-50" />
             </ActionIcon>
             <ActionIcon
               type="submit"

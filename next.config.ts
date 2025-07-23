@@ -5,6 +5,11 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ['@mantine/core', '@mantine/hooks'],
   },
+  turbopack: {
+    resolveAlias: {
+      canvas: './empty.ts',
+    },
+  },
 };
 
 export default nextConfig;
