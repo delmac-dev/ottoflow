@@ -35,10 +35,20 @@ export default function BoardEditor() {
         {/* CANVAS */}
         <Canvas />
 
+        {/* BOARD CONTROLS */}
+        <Box>
+          {/* zoom in, zoom out, zoom 100 */}
+        </Box>
+
+        {/* ELEMENT TREE */}
+        <Box>
+          {/*  */}
+        </Box>
+
         {/* ELEMENT PROPERTIES FORM */}
         <Stack className="absolute right-2 w-56 inset-y-2 bg-dark-700 border border-dark-500 rounded-md gap-0">
-          <Group className="h-10 border-b border-dark-500">
-
+          <Group className="h-10 border-b border-dark-500 px-2 uppercase text-xs font-semibold">
+            board editor
           </Group>
           <Stack className="flex-1 gap-0 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {property_sections.map((section) => (
@@ -57,7 +67,7 @@ export default function BoardEditor() {
                   </Group>
                 </Stack>
               </Stack>
-            ) )}
+            ))}
           </Stack>
         </Stack>
 

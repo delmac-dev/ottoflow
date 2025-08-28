@@ -1,6 +1,6 @@
 "use client";
 
-import theme from "@/app/theme";
+import theme from "@/app/(styles)/theme";
 import { MantineProvider } from "@mantine/core";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SessionProvider } from "next-auth/react";

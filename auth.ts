@@ -25,8 +25,9 @@ export const { handlers, auth } = NextAuth({
         password: { label: "Password", type: "password" },
       },
       authorize: async (credentials ) => {
+        const data = {email: credentials.email, password: credentials.password}
         
-        const validatedData = ZSignIn.safeParse(credentials);
+        const validatedData = ZSignIn.safeParse(data);
 
         if (!validatedData.success) throw new InvalidLoginError();
 
@@ -34,7 +35,6 @@ export const { handlers, auth } = NextAuth({
 
         try {
           const account = await getAccountByEmail(email);
-
           if (!account) throw new InvalidLoginError();
 
           // const isPasswordValid = await bcrypt.compare(
@@ -52,6 +52,7 @@ export const { handlers, auth } = NextAuth({
           };
 
         } catch (error) {
+          console.log("passed",error)
           throw new InvalidLoginError();
         }
       },

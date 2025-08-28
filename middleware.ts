@@ -7,6 +7,10 @@ const { auth } = NextAuth(authConfig);
 export default auth((req) => {
     const url = req.nextUrl.clone();
 
+    if(url.pathname === "/test") {
+        return NextResponse.next();
+    }
+
     if(req.auth &&  url.pathname === "/auth") {
         return NextResponse.redirect(new URL("/", req.url));
     }

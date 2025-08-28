@@ -1,4 +1,0 @@
-@import "tailwind-preset-mantine";
-@import "./theme.css";
-
-/* @custom-variant dark (&:where([data-mantine-color-scheme=dark], [data-mantine-color-scheme=dark] *)); */

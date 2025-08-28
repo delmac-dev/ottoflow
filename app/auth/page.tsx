@@ -1,6 +1,6 @@
 "use client";
 
-import { ActionIcon, Box, Button, Center, Container, PasswordInput, Stack, TextInput, Title } from "@mantine/core";
+import { ActionIcon, Box, Button, Center, Container, PasswordInput, Stack, Textarea, TextInput, Title } from "@mantine/core";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,7 +10,7 @@ import { ISignIn } from "@/lib/types";
 import { ZSignIn } from "@/lib/schema";
 import { useSearchParams } from "next/navigation";
 import { useForm } from '@mantine/form';
-import { zod4Resolver } from 'mantine-form-zod-resolver';
+import { zod4Resolver } from 'mantine-form-zod-resolver'
 
 export default function Auth() {
   const redirectUrl = useSearchParams().get("redirect");
@@ -28,7 +28,7 @@ export default function Auth() {
 
   function onSubmit(values: ISignIn) {
     form.setSubmitting(true);
-    signIn("credentials", { ...values, redirectTo: redirectUrl || "/" });
+    signIn("credentials", { ...values, signUp: !login, redirectTo: redirectUrl || "/" });
     form.setSubmitting(false);
   }
 
@@ -94,15 +94,9 @@ export default function Auth() {
             )}
           </Center>
           <Center py="md">
-            {login?(
-              <ActionIcon variant="outline" color="dark" size={"lg"} radius={"lg"} onClick={() => setLogin(false)}>
-                <ChevronRight className="size-5" />
-              </ActionIcon>
-            ):(
-              <ActionIcon variant="outline" color="dark" size={"lg"} radius={"lg"} onClick={() => setLogin(true)}>
-                <ChevronLeft className="size-5" />
-              </ActionIcon>
-            )}
+            <ActionIcon variant="outline" color="dark" size={"lg"} radius={"lg"} onClick={() => setLogin((prev) => !prev)}>
+              {login ? (<ChevronRight className="size-5" />):(<ChevronLeft className="size-5" />)}
+            </ActionIcon>
           </Center>
         </Stack>
       </Container>
