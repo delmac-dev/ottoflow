@@ -5,7 +5,7 @@ export default function Footer() {
   return (
     <AppShell.Footer>
       <Center h="100%">
-        <Text size="xs">© 2024 Your Company. All rights reserved.</Text>
+        <Text size="xs">© 2024 Ottoflow. All rights reserved.</Text>
       </Center>
     </AppShell.Footer>
   )

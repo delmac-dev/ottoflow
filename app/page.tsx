@@ -23,8 +23,8 @@ export default function TestPage() {
         <AppShell.Section grow>
           <Tabs value={tab} onChange={setTab}> {/*inverted*/}
             <Tabs.List component={AppShell.Section}>
-              <Tabs.Tab value="1">Tab 1</Tabs.Tab>
-              <Tabs.Tab value="2">Tab 2</Tabs.Tab>
+              <Tabs.Tab value="1">Schedules</Tabs.Tab>
+              <Tabs.Tab value="2">Properties</Tabs.Tab>
             </Tabs.List>
             <Tabs.Panel value="1">
               <form>
