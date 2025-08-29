@@ -1,34 +1,51 @@
-import { auth } from "@/auth";
-import BoardEditor from "@/components/board-editor";
-import Profile from "@/components/common/profile";
-import ScheduleEditor from "@/components/schedule-editor";
-import { Box, Breadcrumbs, Group, Stack, Title} from "@mantine/core";
-import Image from "next/image";
-import Link from "next/link";
-import { redirect, RedirectType } from 'next/navigation'
+"use client";
 
-export default async function Home() {
-  const session = await auth();
+import { AppShell, Stack, Tabs, Text } from '@mantine/core';
+import React, { useState } from 'react'
+import Header from './header';
+import Footer from './footer';
+import AIChat from './ai-chat';
+import Designer from './designer';
 
-  if(session === null) {
-    redirect('/auth', RedirectType.replace);
-  }
+export default function TestPage() {
+  const [tab, setTab] = useState<string | null>('1');
 
   return (
-    <Stack className="w-full gap-0">
-      <Group justify="space-between" component="header" className="w-full px-xs h-12 bg-dark-900 border-b border-dark-600">
-        <Breadcrumbs separatorMargin={"md"} classNames={{separator: "text-dark-300"}}>
-          <Link href={"/"}>
-            <Image src={"/common/icon.png"} alt="logo" width={100} height={100} className="size-6" />
-          </Link>
-          <Title order={6} className="font-medium text-dark-50">Projects</Title>
-        </Breadcrumbs>
-        <Profile {...session.user} />
-      </Group>
-      <Box className="grid grid-cols-[var(--size-xs)_minmax(0,_1fr)] gap-0">
-        <ScheduleEditor />
-        <BoardEditor />
-      </Box>
-    </Stack>
-  );
-}
+    <AppShell
+      header={{ height: 44 }}
+      footer={{ height: 24 }}
+      navbar={{ width: 300, breakpoint: 'xs' }}
+      padding={0}
+      className='overflow-hidden'
+    >
+      <Header />
+      <AppShell.Navbar>
+        <AppShell.Section grow>
+          <Tabs value={tab} onChange={setTab}> {/*inverted*/}
+            <Tabs.List component={AppShell.Section}>
+              <Tabs.Tab value="1">Tab 1</Tabs.Tab>
+              <Tabs.Tab value="2">Tab 2</Tabs.Tab>
+            </Tabs.List>
+            <Tabs.Panel value="1">
+              <form>
+                <Stack className='p-4'>
+                  <Text className='text-sm font-semibold text-dark-200 w-full text-center'>Schedule Editor</Text>
+                </Stack>
+              </form>
+            </Tabs.Panel>
+            <Tabs.Panel value="2">
+              <form>
+                <Stack className='p-4'>
+                  <Text className='text-sm font-semibold text-dark-200 w-full text-center'>Properties Editor</Text>
+                </Stack>
+              </form>
+            </Tabs.Panel>
+          </Tabs>
+        </AppShell.Section>
+        <AIChat />
+      </AppShell.Navbar>
+      <Designer />
+      <Footer />
+    </AppShell>
+  )
+};

@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import "./(styles)/globals.css";
 
 import { ColorSchemeScript, mantineHtmlProps} from '@mantine/core';
-import { Providers } from "@/components/common/providers";
+import { Providers } from "@/components/providers";
 
 export const metadata: Metadata = {
   title: "Ottoflow",

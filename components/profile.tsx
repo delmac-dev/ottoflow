@@ -7,7 +7,7 @@ import { signOut } from 'next-auth/react';
 import Image from 'next/image';
 import React from 'react';
 
-export default function Profile(user:User) {
+export default function Profile(user:User| null) {
   const { setColorScheme, colorScheme } = useMantineColorScheme();
 
   const themeOptions = [
@@ -32,9 +32,9 @@ export default function Profile(user:User) {
       <Popover.Dropdown className="bg-dark-700 border-dark-600 p-0">
         <Stack className="w-72 gap-0">
           <Stack className="gap-0 p-2">
-            <Title order={6} className='text-dark-50 px-xs'>{user.name}</Title>
+            <Title order={6} className='text-dark-50 px-xs'>{user?.name}</Title>
             <Text size="xs" className="text-dark-200 px-xs">
-              {user.email}
+              {user?.email}
             </Text>
           </Stack>
           <Divider color="dark.6" />
