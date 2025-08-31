@@ -32,12 +32,6 @@ function ToolButtonMultiple(props: { tools: Props[] }) {
     onDropdownClose: () => combobox.resetSelectedOption(),
   });
 
-  const options = props.tools.map((item) => (
-    <Combobox.Option value={item.label} key={item.label}>
-      {item.label}
-    </Combobox.Option>
-  ));
-
   return (
     <Group gap={0}>
       <ToolButton {...chosenItem} />
