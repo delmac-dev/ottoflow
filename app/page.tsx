@@ -4,47 +4,99 @@ import { AppShell, Stack, Tabs, Text } from '@mantine/core';
 import React, { useState } from 'react'
 import Header from './header';
 import Footer from './footer';
-import AIChat from './ai-chat';
-import Designer from './designer';
+import DataPanel from '../components/data/data-panel';
+import SchemaPanel from '@/components/data/schema-panel';
+import AIArea from '@/components/data/ai-area';
+import { useViewportSize } from '@mantine/hooks';
+import Board from '@/components/board';
 
 export default function TestPage() {
-  const [tab, setTab] = useState<string | null>('1');
+  const [dataTab, setDataTab] = useState<string | null>('1');
+  const [boardTab, setBoardTab] = useState<string | null>('1');
+  const { width, height } = useViewportSize();
+
+  const headerSize = 44;
+  const footerSize = 24;
+  const boardOffset = 64;
+  const navbarWidth = 300;
+  const stageHeight = height - headerSize - footerSize - boardOffset;
+  const stageWidth = width - navbarWidth;
+
+  const dataPanel = [
+    {tab: '1', name: 'Data', content: DataPanel},
+    {tab: '2', name: 'Schema', content: SchemaPanel},
+  ]
+
+  const boardPanel = [
+    {tab: '1', name: 'Board 1', content: Board}
+  ]
 
   return (
     <AppShell
-      header={{ height: 44 }}
-      footer={{ height: 24 }}
-      navbar={{ width: 300, breakpoint: 'xs' }}
+      header={{ height: headerSize }}
+      footer={{ height: footerSize }}
+      navbar={{ width: navbarWidth, breakpoint: 'xs' }}
       padding={0}
       className='overflow-hidden'
     >
       <Header />
       <AppShell.Navbar>
         <AppShell.Section grow>
-          <Tabs value={tab} onChange={setTab}> {/*inverted*/}
-            <Tabs.List component={AppShell.Section}>
-              <Tabs.Tab value="1">Schedules</Tabs.Tab>
-              <Tabs.Tab value="2">Properties</Tabs.Tab>
+          <Tabs 
+            inverted
+            value={dataTab}
+            onChange={setDataTab}
+            classNames={{
+              list: "before:border-0!",
+              tab: "data-[active]:bg-dark-600 data-[active]:border-t-2 py-2! rounded-none",
+            }}
+          >
+            <Tabs.List>
+              {dataPanel.map(item => (
+                <Tabs.Tab key={item.tab} value={item.tab} px="xs" className='h-8'>
+                  <Text size='xs' fw={700}>
+                    {item.name}
+                  </Text>
+                </Tabs.Tab>
+              ))}
             </Tabs.List>
-            <Tabs.Panel value="1">
-              <form>
-                <Stack className='p-4'>
-                  <Text className='text-sm font-semibold text-dark-200 w-full text-center'>Schedule Editor</Text>
-                </Stack>
-              </form>
-            </Tabs.Panel>
-            <Tabs.Panel value="2">
-              <form>
-                <Stack className='p-4'>
-                  <Text className='text-sm font-semibold text-dark-200 w-full text-center'>Properties Editor</Text>
-                </Stack>
-              </form>
-            </Tabs.Panel>
+            {dataPanel.map(item => (
+              <Tabs.Panel key={item.tab} value={item.tab}>
+                <item.content />
+              </Tabs.Panel>
+            ))}
           </Tabs>
         </AppShell.Section>
-        <AIChat />
+        <AIArea />
       </AppShell.Navbar>
-      <Designer />
+      <AppShell.Main className='relative'>
+        <AppShell.Section grow bg="dark.8">
+          <Tabs 
+            inverted
+            value={boardTab}
+            onChange={setBoardTab}
+            classNames={{
+              list: "before:border-0!",
+              tab: "data-[active]:bg-dark-600 data-[active]:border-t-2 py-2! rounded-none",
+            }} 
+          >
+            <Tabs.List>
+              {boardPanel.map(item => (
+                <Tabs.Tab key={item.tab} value={item.tab} px="xs" className='h-8'>
+                  <Text size='xs' fw={700}>
+                    {item.name}
+                  </Text>
+                </Tabs.Tab>
+              ))}
+            </Tabs.List>
+            {boardPanel.map(item => (
+              <Tabs.Panel key={item.tab} value={item.tab}>
+                <item.content width={stageWidth} height={stageHeight} id={`board-${item.tab}`} />
+              </Tabs.Panel>
+            ))}
+          </Tabs>
+        </AppShell.Section>
+      </AppShell.Main>
       <Footer />
     </AppShell>
   )
