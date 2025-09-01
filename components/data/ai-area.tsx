@@ -1,21 +1,14 @@
 import { useAIChat } from '@/lib/query.hooks';
 import { ZAIArea } from '@/lib/schema';
 import { IAIArea } from '@/lib/types';
-import { ActionIcon, AppShell, Box, Center, Group, Loader, Stack, Text, Tooltip } from '@mantine/core'
-import { File, Image, Paperclip, SendHorizontal, Upload, X } from 'lucide-react'
+import { ActionIcon, AppShell, Center, Group, Loader, Stack, Text, Tooltip } from '@mantine/core'
+import { Paperclip, SendHorizontal, X } from 'lucide-react'
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useCallback, useRef } from 'react'
 import { useController, useForm } from "react-hook-form";
 import { useDropzone } from 'react-dropzone'
 import { cn } from '@/lib/utils';
-import { url } from 'inspector';
 import { useEdgeStore } from '@/lib/edgestore';
-import { useMutation } from '@tanstack/react-query';
-
-const tools = [
-  { icon: Paperclip, label: 'upload', action: () => console.log('Upload'), disabled: false, isSubmit: false },
-  { icon: SendHorizontal, label: 'send', action: () => { }, disabled: false, isSubmit: true },
-];
 
 export default function AIArea() {
   const { mutate } = useAIChat();
