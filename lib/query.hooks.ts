@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import keys from "@/lib/keys";
+import * as A from "@/lib/actions";
 import * as P from "@/lib/actions/project.actions";
 import { editBoard } from "./actions/board.actions";
 
@@ -74,13 +75,14 @@ export function useEditBoard() {
   })
 }
 
-export function useHandlePrompt() {
+export function useAIChat() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: P.handlePrompt,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: keys.projects })
+    mutationFn: A.aiChat,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: keys.projects }),
+      console.log("from useAIChat",data);
     },
   })
 }
