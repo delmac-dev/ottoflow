@@ -1,36 +1,21 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## AI API ROUTE TODO
 
-## Getting Started
+[✓] create a super/system prompt that is a scheduling assistant
+[✓] so it calls a series of tools that does the read and write to db
+[✓] call a responder tool with params error and concise reason
+[✓] call postData tool with params list of object called properties, list of object called schedules.the properties is of type { type, value}which is a list of properties that defines the structure of schedule list. the schedules is of type {}[] the key gotten from the values in the properties list
 
-First, run the development server:
+## Implementation Details
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### AI Scheduling Assistant Features:
+1. **Super Prompt**: Comprehensive system prompt that guides the AI to act as a scheduling assistant
+2. **Tool-based Architecture**: Two main tools for handling responses and data
+3. **PDF Processing**: Handles timetable PDF uploads with user prompts
+4. **Structured Data Extraction**: Converts unstructured schedule data into organized format
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Available Tools:
+- **responder**: Handles errors and explanatory responses
+- **postData**: Processes successfully extracted schedule data with properties and schedules arrays
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Usage:
+Upload a timetable PDF and provide a prompt describing what you want to extract (e.g., "Extract all class schedules with times and locations")
