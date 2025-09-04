@@ -1,55 +1,39 @@
-import React from 'react';
-import { Group, Layer, Rect, Stage } from 'react-konva';
 import GridLayer from './grid-layer';
-import { useMantineTheme } from '@mantine/core';
 import ToolBar from './tool-bar';
-import { Circle, Frame, Hexagon, Image, MoveUpRight, PenTool, Spline, Square, Star, Torus, Type } from 'lucide-react';
+import { Stage } from 'react-konva';
+import SelectionLayer from './selection-layer';
+import { useStore } from 'zustand';
+import { boardStore } from '@/lib/stores/board.store';
+import Example3 from './content-examples/example-3';
+import click from '@/lib/handlers/click';
+import mouseDown from '@/lib/handlers/mouse-down';
+import mouseMove from '@/lib/handlers/mouse-move';
+import mouseUp from '@/lib/handlers/mouse-up';
 
 type Props = {
-  width: number;
-  height: number;
   id: string;
 }
 
-export default function Board({ width, height, id }: Props) {
-  const theme = useMantineTheme();
-
-  const tools = [
-    [{ icon: Frame, label: 'Frame', action: () => {}, disabled: false }],
-    [
-      { icon: Square, label: 'Rectangle', action: () => {}, disabled: false },
-      { icon: Circle, label: 'Circle', action: () => {}, disabled: false },
-      { icon: MoveUpRight, label: 'Arrow', action: () => {}, disabled: false },
-      { icon: Spline, label: 'Line', action: () => {}, disabled: false }
-    ],
-    [{ icon: PenTool, label: 'Pen', action: () => {}, disabled: false }],
-    [
-      { icon: Star, label: 'Star', action: () => {}, disabled: false },
-      { icon: Hexagon, label: 'Polygon', action: () => {}, disabled: false },
-      { icon: Torus, label: 'Ring', action: () => {}, disabled: false }
-    ],
-    [{ icon: Type, label: 'Text', action: () => {}, disabled: false }],
-    [{ icon: Image, label: 'Image', action: () => {}, disabled: false }]
-  ]
+export default function Board({ id }: Props) {
+  const width = useStore(boardStore, (s) => s.width);
+  const height = useStore(boardStore, (s) => s.height);
 
   return (
     <>
-      <ToolBar tools={tools} />
-      <Stage height={height} width={width}>
-        <GridLayer width={width} height={height} cellSize={20} />
-        <Layer>
-          <Group>
-            <Rect
-              x={(width - 480) / 2}
-              y={(height - 480) / 2}
-              width={480}
-              height={480}
-              fill={theme.colors.green[5]}
-            />
-
-          </Group>
-        </Layer>
+      <ToolBar />
+      <Stage
+        name='stage'
+        height={height}
+        width={width}
+        onClick={click}
+        onMouseDown={mouseDown}
+        onMouseMove={mouseMove}
+        onMouseUp={mouseUp}
+      >
+        <GridLayer />
+        <Example3 />
+        <SelectionLayer />
       </Stage>
     </>
   )
-}
+};

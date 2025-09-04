@@ -1,17 +1,16 @@
 import { Stage, Layer, Line } from "react-konva";
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useMantineTheme } from "@mantine/core";
+import { useStore } from "zustand";
+import { boardStore } from "@/lib/stores/board.store";
 
-type Props = {
-  width: number;
-  height: number;
-  cellSize?: number;
-};
-
-export default function GridLayer({ width, height, cellSize = 50 }: Props) {
+export default function GridLayer() {
   const theme = useMantineTheme();
+  const width = useStore(boardStore, (s) => s.width);
+  const height = useStore(boardStore, (s) => s.height);
   const lines = [];
   const strokeColor = theme.colors.dark[6];
+  const cellSize = 20;
 
   // Vertical lines
 for (let i = 0; i < width / cellSize; i++) {
@@ -40,7 +39,7 @@ for (let j = 0; j < height / cellSize; j++) {
 }
 
   return (
-    <Layer listening={false}>
+    <Layer listening={false} name="grid-layer">
       {lines}
     </Layer>
   );

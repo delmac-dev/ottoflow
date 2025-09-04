@@ -1,24 +1,30 @@
+import { boardStore } from '@/lib/stores/board.store';
+import { Action } from '@/lib/types';
+import { cn } from '@/lib/utils';
 import { ActionIcon, Button, Combobox, Group, Text, Tooltip, useCombobox } from '@mantine/core';
 import { ChevronDown, LucideIcon } from 'lucide-react';
 import React, { useState } from 'react';
+import { useStore } from 'zustand';
 
 type Props = {
   icon: LucideIcon,
   label: string,
-  action: () => void,
-  disabled?: boolean,
+  tool: Action,
 }
 
 export default function ToolButton(props: Props) {
-  const { label, action, disabled } = props;
+  const { label, tool } = props;
+  const activeTool = useStore(boardStore, (s) => s.activeTool);
+  const setActiveTool = useStore(boardStore, (s) => s.setActiveTool);
+
   return (
     <Tooltip label={label} position='bottom' h={24} color='dark.6' className='text-xs'>
       <ActionIcon
-        onClick={action}
-        disabled={disabled}
+        onClick={() => setActiveTool(tool)}
         variant='subtle'
         color='dark.2'
         size='input-xs'
+        className={cn(activeTool === tool && 'bg-blue text-dark-50')}
       >
         <props.icon className='size-4' />
       </ActionIcon>
@@ -28,6 +34,7 @@ export default function ToolButton(props: Props) {
 
 function ToolButtonMultiple(props: { tools: Props[] }) {
   const [chosenItem, setChosenItem] = useState<Props>(props.tools[0]);
+  const setActiveTool = useStore(boardStore, (s) => s.setActiveTool);
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
   });
@@ -41,6 +48,7 @@ function ToolButtonMultiple(props: { tools: Props[] }) {
         position="bottom"
         onOptionSubmit={(val) => {
           setChosenItem(props.tools[val as unknown as number]);
+          setActiveTool(props.tools[val as unknown as number].tool);
           combobox.closeDropdown();
         }}
       >

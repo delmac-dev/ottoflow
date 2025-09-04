@@ -1,7 +1,7 @@
 "use client";
 
 import { AppShell, NavLink, ScrollArea, Stack, Tabs, Text } from '@mantine/core';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from './header';
 import Footer from './footer';
 import DataPanel from '../components/data/data-panel';
@@ -9,18 +9,21 @@ import SchemaPanel from '@/components/data/schema-panel';
 import AIArea from '@/components/data/ai-area';
 import { useViewportSize } from '@mantine/hooks';
 import Board from '@/components/board';
+import { boardStore } from '@/lib/stores/board.store';
+import { useStore } from 'zustand';
+import { BoardMode } from '@/lib/types';
 
 export default function TestPage() {
   const [dataTab, setDataTab] = useState<string | null>('1');
   const [boardTab, setBoardTab] = useState<string | null>('1');
   const { width, height } = useViewportSize();
+  const setWidth = useStore(boardStore, (s) => s.setWidth);
+  const setHeight = useStore(boardStore, (s) => s.setHeight);
 
   const headerSize = 44;
   const footerSize = 24;
   const boardOffset = 64;
   const navbarWidth = 300;
-  const stageHeight = height - headerSize - footerSize - boardOffset;
-  const stageWidth = width - navbarWidth;
 
   const dataPanel = [
     { tab: '1', name: 'Data', content: DataPanel },
@@ -29,7 +32,29 @@ export default function TestPage() {
 
   const boardPanel = [
     { tab: '1', name: 'Board 1', content: Board }
-  ]
+  ];
+
+  useEffect(() => {
+    const stageHeight = height - headerSize - footerSize - boardOffset;
+    const stageWidth = width - navbarWidth;
+    setHeight(stageHeight);
+    setWidth(stageWidth);
+  }, [height, width]);
+
+  useEffect(() => {
+    const handleMouseUp = () => {
+      const { mode, setMode, hideSelectionNet } = boardStore.getState();
+      if (mode === BoardMode.Selecting) {
+        setMode(BoardMode.Idle);
+        hideSelectionNet();
+      };
+    };
+
+    window.addEventListener("mouseup", handleMouseUp);
+    return () => {
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, []);
 
   return (
     <AppShell
@@ -94,7 +119,7 @@ export default function TestPage() {
             </Tabs.List>
             {boardPanel.map(item => (
               <Tabs.Panel key={item.tab} value={item.tab}>
-                <item.content width={stageWidth} height={stageHeight} id={`board-${item.tab}`} />
+                <item.content id={`board-${item.tab}`} />
               </Tabs.Panel>
             ))}
           </Tabs>
