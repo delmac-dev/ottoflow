@@ -1,17 +1,19 @@
+"use server";
+
 import { IAIArea } from "./types";
-import { getDb } from "./utils.mongo";
+import connect from "@/lib/mongoose";
+import Profile from "@/lib/models/profile";
 
 /**
- * Retrieves an account from the database by their email address.
+ * Retrieves a profile from the database by their email address.
  *
- * @param email - The email address of the acount to retrieve.
- * @returns A promise that resolves to the account object formatted as an IAccount instance.
+ * @param email - The email address of the profile to retrieve.
+ * @returns A promise that resolves to the profile object formatted as an IProfile instance.
  */
-export async function getAccountByEmail(email: string){
-    await using db = await getDb();
-    const account = await db.A.findOne({email});
+export async function getProfileByEmail(email: string){
+    await connect();
 
-    // return format.from<IAccount>(account!);
+    const profile = await Profile.findOne({ email }).lean();
 
     return {
         id: "1",
@@ -46,4 +48,11 @@ export const aiChat = async (data: IAIArea) => {
   }
 
   return result;
+}
+
+export async function addTodoAction(title: string) {
+  await connect();
+  // const todo = await Todo.create({ title });
+  // return todo.toObject();
+  return {};
 }

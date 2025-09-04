@@ -3,8 +3,8 @@ import authConfig from "./auth.config";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { ZSignIn } from "./lib/schema";
-import { getAccountByEmail } from "./lib/actions/account.actions";
 import { JWT } from "next-auth/jwt";
+import { getProfileByEmail } from "./lib/actions";
 
 declare module "next-auth/jwt" {
   interface JWT {
@@ -34,21 +34,21 @@ export const { handlers, auth } = NextAuth({
         const { email, password } = validatedData.data;
 
         try {
-          const account = await getAccountByEmail(email);
-          if (!account) throw new InvalidLoginError();
+          const profile = await getProfileByEmail(email);
+          if (!profile) throw new InvalidLoginError();
 
           // const isPasswordValid = await bcrypt.compare(
           //   password,
-          //   account.password
+          //   profile.password
           // ); //delmac@123
 
           // if (!isPasswordValid) throw new InvalidLoginError();
 
           return {
-            id: account.id,
-            email: account.email,
-            name: account.username,
-            image: account.avatar
+            id: profile.id,
+            email: profile.email,
+            name: profile.username,
+            image: profile.avatar
           };
 
         } catch (error) {
