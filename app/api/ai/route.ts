@@ -19,7 +19,6 @@ const tools = {
     }),
     execute: async ({ schedules, properties }) => {
       // Store or process schedules
-      console.log('Schedule data generated:', { schedules, properties });
       return { 
         success: true, 
         message: 'Schedule data extracted and generated successfully',
@@ -36,7 +35,6 @@ const tools = {
     }),
     execute: async ({ reason }) => {
       // Log or notify about unsupported request
-      console.log('Invalid request:', reason);
       return { 
         handled: false, 
         success: false,
