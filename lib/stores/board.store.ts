@@ -26,16 +26,21 @@ interface IBoardStore {
   width: number;
   height: number;
   activeTool: Action;
-  shouldDownload: boolean;
-  mode: BoardMode;
-
-  selectionNet: ISelectionNet;
-  hideSelectionNet: () => void;
-  setSelectionNet: (selectionNet: Omit<ISelectionNet, 'visible'>) => void;
-  setMode: (mode: BoardMode) => void;
   setWidth: (width: number) => void;
   setHeight: (height: number) => void;
   setActiveTool: (tool: Action) => void;
+
+  selectionNet: ISelectionNet;
+  hideSelectionNet: () => void;
+  setSelectionNet: (selectionNet: ISelectionNet) => void;
+
+  selectedNodes: string[];
+  setSelectedNodes: (ids: string[]) => void;
+  
+  mode: BoardMode;
+  setMode: (mode: BoardMode) => void;
+
+  shouldDownload: boolean;
   triggerDownload: () => void;
   clearDownload: () => void;
 };
@@ -68,6 +73,7 @@ export const boardStore = createStore<IBoardStore>()(subscribeWithSelector(
     activeTool: Action.Select,
     shouldDownload: false,
     mode: BoardMode.Idle,
+    selectedNodes: [],
     selectionNet: {
       visible: false,
       x1: 0,
@@ -75,12 +81,13 @@ export const boardStore = createStore<IBoardStore>()(subscribeWithSelector(
       x2: 0,
       y2: 0,
     },
-    setSelectionNet: (selectionNet: Omit<ISelectionNet, 'visible'>) => {
-      set({ selectionNet: { ...selectionNet, visible: true } });
+    setSelectionNet: (selectionNet: ISelectionNet) => {
+      set({ selectionNet: { ...selectionNet } });
     },
     hideSelectionNet: () => {
       set({ selectionNet: { ...get().selectionNet, visible: false } });
     },
+    setSelectedNodes: (nodes: string[]) => set({ selectedNodes: nodes }),
     setWidth: (width: number) => set({ width }),
     setHeight: (height: number) => set({ height }),
     setMode: (mode: BoardMode) => set({ mode }),

@@ -4,11 +4,11 @@ import { Stage } from 'react-konva';
 import SelectionLayer from './selection-layer';
 import { useStore } from 'zustand';
 import { boardStore } from '@/lib/stores/board.store';
-import Example3 from './content-examples/example-3';
 import click from '@/lib/handlers/click';
 import mouseDown from '@/lib/handlers/mouse-down';
 import mouseMove from '@/lib/handlers/mouse-move';
 import mouseUp from '@/lib/handlers/mouse-up';
+import ContentLayer from './content-layer';
 
 type Props = {
   id: string;
@@ -31,7 +31,7 @@ export default function Board({ id }: Props) {
         onMouseUp={mouseUp}
       >
         <GridLayer />
-        <Example3 />
+        <ContentLayer />
         <SelectionLayer />
       </Stage>
     </>
