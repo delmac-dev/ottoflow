@@ -48,11 +48,11 @@ export interface IProfile extends Document {
 export interface IProject extends Document {
   name: string;
   owner_id: Types.ObjectId;
-  data: { key: string; value: string }[][];
+  data: Record<string, string>[]; 
   properties: { type: "text" | "boolean"; key: string }[];
   createdAt: Date;
   updatedAt: Date;
-};
+}
 
 export interface IBoard extends Document {
   name: string;

@@ -5,12 +5,9 @@ const ProjectSchema = new Schema<IProject>({
   name: { type: String, required: true },
   owner_id: { type: Schema.Types.ObjectId, ref: "Profile", required: true },
   data: [
-    [
-      {
-        key: { type: String, required: true },
-        value: { type: String, required: true },
-      },
-    ],
+    {
+      type: Schema.Types.Mixed
+    },
   ],
   properties: [
     {

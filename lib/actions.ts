@@ -15,6 +15,8 @@ export async function getProfileByEmail(email: string){
 
     const profile = await Profile.findOne({ email }).lean();
 
+    console.log("Fetched profile:", profile);
+
     return {
         id: "1",
         email: "contact@delalitengue.com",
