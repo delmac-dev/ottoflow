@@ -66,7 +66,7 @@ export interface IBoard extends Document {
 export interface INode {
   id: string;
   name: string;
-  type: "Page" | "Rect" | "Circle" | "Ellipse" | "Line" | "Arrow" | "Pen" | "Polygon" | "Star" | "Ring" | "Text" | "Frame";
+  type: "Page" | "Rect" | "Circle" | "Ellipse" | "Line" | "Arrow" | "Pen" | "Polygon" | "Star" | "Ring" | "Text" | "Frame" | "Image" | "Component";
 
   // Base props
   x?: number;
@@ -103,6 +103,7 @@ export interface INode {
   totalPoints?: number;
   innerRadius?: number;
   outerRadius?: number;
+  image?: string;
 
   // Text-specific
   text?: {

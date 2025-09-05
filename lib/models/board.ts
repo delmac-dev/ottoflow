@@ -21,7 +21,7 @@ const NodeSchema = new Schema<INode>({
   name: { type: String, required: true },
   type: {
     type: String,
-    enum: ["Page", "Rect", "Circle", "Ellipse", "Line", "Arrow", "Pen", "Polygon", "Star", "Ring", "Text", "Frame"],
+    enum: ["Page", "Rect", "Circle", "Ellipse", "Line", "Arrow", "Pen", "Polygon", "Star", "Ring", "Text", "Frame", "Image", "Component"],
     required: true,
   },
 
@@ -53,6 +53,7 @@ const NodeSchema = new Schema<INode>({
   totalPoints: Number,
   innerRadius: Number,
   outerRadius: Number,
+  image: String,
 
   // Text
   text: TextSchema,

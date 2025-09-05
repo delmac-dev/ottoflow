@@ -5,7 +5,7 @@ import connect from "@/lib/mongoose";
 import Profile from "@/lib/models/profile";
 
 /**
- * Retrieves a profile from the database by their email address.
+ * RETRIEVES A PROFILE FROM THE DATABASE BY THEIR EMAIL ADDRESS.
  *
  * @param email - The email address of the profile to retrieve.
  * @returns A promise that resolves to the profile object formatted as an IProfile instance.
@@ -26,6 +26,13 @@ export async function getProfileByEmail(email: string){
     }
 }
 
+/**
+ * SENDS A PROMPT AND OPTIONAL FILE TO THE AI API FOR PROCESSING.
+ *
+ * @param data - An object containing the prompt and optional file information.
+ * @returns A promise that resolves to the AI response data.
+ * @throws Error if the AI request fails or returns an error.
+ */
 export const aiChat = async (data: IAIArea) => {
   const res = await fetch("/api/ai", {
     method: "POST",
@@ -42,15 +49,9 @@ export const aiChat = async (data: IAIArea) => {
   }
 
   const result = await res.json();
-  
-  if (result.tool === 'postData' && result.result?.success) {
-    console.log("Schedule data extracted successfully:", result.result.data);
-  } else if (result.tool === 'responder' && result.result?.success === false) {
-    console.log("AI processing error:", result.result.message);
-  }
 
   return result;
-}
+};
 
 export async function addTodoAction(title: string) {
   await connect();
