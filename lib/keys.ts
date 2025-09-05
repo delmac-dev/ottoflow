@@ -1,7 +1,7 @@
 const keys = {
-  projects: ["projects"] as const,
-  project: (id: string) => ["projects", id] as const,
-  board: (id: string) => ["projects", id, "board"] as const,  
+  profile: ["profile"] as const,
+  workspaces: ["workspaces"] as const,
+  workspaceContext: (projectId: string) => ["workspaceContext", projectId] as const,
 };
 
 export default keys;

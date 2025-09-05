@@ -42,7 +42,7 @@ export default function TestPage() {
   }, [height, width]);
 
   useEffect(() => {
-    const handleMouseUp = () => {
+    const handleMouseUp = (event: MouseEvent) => {
       const { mode, setMode, hideSelectionNet } = boardStore.getState();
       if (mode === BoardMode.Selecting) {
         setMode(BoardMode.Idle);
@@ -50,9 +50,9 @@ export default function TestPage() {
       };
     };
 
-    window.addEventListener("mouseup", handleMouseUp);
+    document.addEventListener("mouseup", handleMouseUp);
     return () => {
-      window.removeEventListener("mouseup", handleMouseUp);
+      document.removeEventListener("mouseup", handleMouseUp);
     };
   }, []);
 

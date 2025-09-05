@@ -1,8 +1,10 @@
 "use server";
 
-import { IAIArea } from "./types";
+import { IAIArea, INode, IProfile, IProject } from "./types";
 import connect from "@/lib/mongoose";
 import Profile from "@/lib/models/profile";
+import Board from "./models/board";
+import Project from "./models/project";
 
 /**
  * RETRIEVES A PROFILE FROM THE DATABASE BY THEIR EMAIL ADDRESS.
@@ -15,8 +17,6 @@ export async function getProfileByEmail(email: string){
 
     const profile = await Profile.findOne({ email }).lean();
 
-    console.log("Fetched profile:", profile);
-
     return {
         id: "1",
         email: "contact@delalitengue.com",
@@ -24,7 +24,23 @@ export async function getProfileByEmail(email: string){
         avatar: "avatar-1",
         password: "c2f10579c54cb0ac1ea0eb4e006956fdc1392e5738942ca507a96f167f1d597b8f95fd581f72859add1876a8228fab2747e200baaa7a8965bfd704ea0f6e209f"
     }
-}
+};
+
+export const editProfile = async ({ profileID, data}: { profileID: string; data: Partial<IProfile>; }) => {
+  await connect();
+
+  const updatedProfile = await Profile.findByIdAndUpdate(
+    profileID,
+    { $set: data },
+    { new: true }
+  );
+
+  if (!updatedProfile) {
+    throw new Error("Profile not found");
+  }
+
+  return updatedProfile.toObject();
+};
 
 /**
  * SENDS A PROMPT AND OPTIONAL FILE TO THE AI API FOR PROCESSING.
@@ -53,9 +69,116 @@ export const aiChat = async (data: IAIArea) => {
   return result;
 };
 
-export async function addTodoAction(title: string) {
+export const getWorkspaceContext = async (projectId: string) => {
   await connect();
-  // const todo = await Todo.create({ title });
-  // return todo.toObject();
-  return {};
-}
+  
+  const project = await Project.findById(projectId).lean();
+  const boards = await Board.find({ project_id: projectId }).lean();
+
+  return {
+    project,
+    boards
+  };
+};
+
+export const newProject = async ({ name, ownerID }: { name: string; ownerID: string; }) => {
+  await connect();
+
+  const project = new Project({
+    name,
+    owner_id: ownerID,
+    created_at: new Date(),
+    updated_at: new Date()
+  });
+
+  await project.save();
+
+  return project.toObject();
+};
+
+export const getAllProjects = async (ownerID: string) => {
+  await connect();
+
+  const projects = await Project.find(
+    { owner_id: ownerID }, 
+    { _id: 1, name: 1, created_at: 1, updated_at: 1 }
+  ).lean();
+
+  return projects;
+};
+
+//for ai xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+export const getProject = async (projectID: string) => {
+  await connect();
+
+  const project = await Project.findById(projectID).lean();
+
+  if (!project) {
+    throw new Error("Project not found");
+  }
+
+  return project;
+};
+
+export const saveBoardRoot = async ({boardID, root}: {boardID: string; root: INode;}) => {
+  await connect();
+
+  const updatedBoard = await Board.findByIdAndUpdate(
+    boardID, { root }, { new: true } // return updated doc
+  );
+
+  if (!updatedBoard) {
+    throw new Error("Board not found");
+  }
+
+  return updatedBoard.toObject();
+};
+
+export const changeProjectName = async ({projectID, name}: {projectID: string; name: string;}) => {
+  await connect();
+
+  const updatedProject = await Project.findByIdAndUpdate(
+    projectID,
+    { $set: { name } },
+    { new: true }
+  );
+
+  if (!updatedProject) {
+    throw new Error("Project not found");
+  }
+
+  return updatedProject.toObject();
+};
+
+//save schedule data
+export const saveProjectData = async ({projectID, data}: {projectID: string; data: IProject["data"];}) => {
+  await connect();
+
+  const updatedProject = await Project.findByIdAndUpdate(
+    projectID,
+    { $set: data },
+    { new: true }
+  );
+
+  if (!updatedProject) {
+    throw new Error("Project not found");
+  }
+
+  return updatedProject.toObject();
+};
+
+export const saveProjectProperties = async ({projectID, properties}: {projectID: string; properties: IProject["properties"];}) => {
+  await connect();
+
+  const updatedProject = await Project.findByIdAndUpdate(
+    projectID,
+    { $set: { properties } },
+    { new: true }
+  );
+
+  if (!updatedProject) {
+    throw new Error("Project not found");
+  }
+
+  return updatedProject.toObject();
+};

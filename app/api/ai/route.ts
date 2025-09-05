@@ -3,8 +3,9 @@ import { generateText, tool } from 'ai';
 import { google } from '@ai-sdk/google';
 import z from "zod";
 import connect from "@/lib/mongoose";
-import Profile from "@/lib/models/profile";
+import Project from "@/lib/models/project";
 import { SUPER_PROMPT } from "./prompt";
+import { IProject } from "@/lib/types";
 
 // Tool definitions using the new format
 const tools = {
@@ -47,16 +48,24 @@ const tools = {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { fileUrl, prompt } = body;
+    const { fileUrl, prompt, projectID } = body;
 
-    console.log({ fileUrl, prompt });
+    if(!projectID) {
+      return NextResponse.json({ error: "projectID is required" }, { status: 400 });
+    }
 
     if (!fileUrl || !prompt) {
       return NextResponse.json({ error: "fileUrl and prompt are required" }, { status: 400 });
     }
 
     await connect();
-    const profile = await Profile.findOne({ email: "test@example.com" }).lean();
+    const project = await Project.findById(projectID).lean<IProject | null>();
+
+    const projectContext = `
+      Project Name: ${project?.name || "Unnamed Project"}
+      Properties: ${JSON.stringify(project?.properties || [], null, 2)}
+      Data: ${JSON.stringify(project?.data || [], null, 2)}
+    `;
 
     const result = await generateText({
       model: google('gemini-2.5-pro'),
@@ -69,6 +78,10 @@ export async function POST(req: NextRequest) {
         {
           role: 'user',
           content: [
+            {
+              type: "text",
+              text: `Project Context:\n${projectContext}`,
+            },
             {
               type: 'text',
               text: `User Request: ${prompt}`,

@@ -70,8 +70,8 @@ const NodeSchema = new Schema<INode>({
 
   // Frame
   layoutType: { type: String, enum: ["vertical", "horizontal", "grid"] },
-  children: { type: [() => NodeSchema], default: [] },
-  component: { type: () => NodeSchema },
+  children: { type: [Object], default: [] },
+  component: { type: Object },
 }, { _id: false });
 
 const BoardSchema = new Schema<IBoard>({

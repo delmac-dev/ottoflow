@@ -3,84 +3,88 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import keys from "@/lib/keys";
 import * as A from "@/lib/actions";
+import { appStore } from "./stores/app.store";
+import { INode, IProject } from "./types";
 
-// export function useGetProjects() {
-//   const queryKey = keys.projects;
-//   const queryFn = async () => await P.getProjects();
+export function useEditProfile(id: string) {
+  const queryClient = useQueryClient();
 
-//   return useQuery({ queryKey, queryFn });
-// };
+  return useMutation({
+    mutationFn: A.editProfile,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: keys.profile })
+    },
+  })
+};
 
-// export function useNewProject() {
-//   const queryClient = useQueryClient();
+export function useGetAllProjects(ownerID: string) {
+  const queryKey = keys.workspaces;
+  const queryFn = async () => await A.getAllProjects(ownerID);
 
-//   return useMutation({
-//     mutationFn: P.newProject,
-//     onSuccess: () => {
-//       queryClient.invalidateQueries({ queryKey: keys.projects })
-//     },
-//   })
-// }
+  return useQuery({ queryKey, queryFn });
+};
 
-// export function useCloneProject() {
-//   const queryClient = useQueryClient();
+export function useGetWorkspaceContext({ projectId }: { projectId: string }) {
+  const queryKey = keys.workspaceContext(projectId);
+  const queryFn = async () => await A.getWorkspaceContext(projectId);
 
-//   return useMutation({
-//     mutationFn: P.cloneProject,
-//     onSuccess: () => {
-//       queryClient.invalidateQueries({ queryKey: keys.projects })
-//     },
-//   })
-// }
+  return useQuery({ queryKey, queryFn });
+};
 
-// export function useEditProjectInfo(id: string) {
-//   const queryClient = useQueryClient();
+export function useNewProject({name, ownerID}: {name: string; ownerID: string;}) {
+  const queryClient = useQueryClient();
 
-//   return useMutation({
-//     mutationFn: P.editProjectInfo,
-//     onSuccess: () => {
-//       queryClient.invalidateQueries({ queryKey: keys.project(id) })
-//     },
-//   })
-// }
+  return useMutation({
+    mutationFn: () => A.newProject({name, ownerID}),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: keys.workspaces })
+    },
+  })
+};
 
-// export function useEditScheduleData() {
-//   return useMutation({
-//     mutationFn: P.editScheduleData
-//   })
-// }
+export function useSaveBoardRoot({boardID, root}: {boardID: string; root: INode;}) {
+  const queryClient = useQueryClient();
 
-// export function useEditScheduleInfo() {
-//   return useMutation({
-//     mutationFn: P.editScheduleInfo
-//   })
-// }
+  return useMutation({
+    mutationFn: () => A.saveBoardRoot({boardID, root}),
+  })
+};
 
-// export function useDeleteProject() {
-//   const queryClient = useQueryClient();
+export function useChangeProjectName({projectID, name}: {projectID: string; name: string;}) {
+  const queryClient = useQueryClient();
 
-//   return useMutation({
-//     mutationFn: P.deleteProject,
-//     onSuccess: () => {
-//       queryClient.invalidateQueries({ queryKey: keys.projects })
-//     },
-//   })
-// }
+  return useMutation({
+    mutationFn: () => A.changeProjectName({projectID, name}),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: keys.workspaces })
+    },
+  })
+};
 
-// export function useEditBoard() {
-//   return useMutation({
-//     mutationFn: editBoard
-//   })
-// }
+export function useSaveProjectData({projectID, data}: {projectID: string; data: IProject["data"];}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => A.saveProjectData({projectID, data}),
+  })
+};
+
+export function useSaveProjectProperties({projectID, properties}: {projectID: string; properties: IProject["properties"];}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => A.saveProjectProperties({projectID, properties}),
+  })
+};
 
 export function useAIChat() {
+  const { projectID } = appStore.getState();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: A.aiChat,
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: keys.projects }),
-      console.log("from useAIChat",data);
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: keys.workspaceContext(projectID) });
     },
   })
 }
