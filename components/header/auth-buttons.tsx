@@ -17,10 +17,10 @@ export default function AuthButtons() {
   const [mode, setMode] = useState<AuthMode>();
   const [opened, { open, close }] = useDisclosure(false);
   const { mutate: signInMutate, isPending: isSignInPending } = useMutation({
-    mutationFn: (data: ISignIn) => signIn("credentials", { ...data, signIn: true })
+    mutationFn: (data: ISignIn) => signIn("credentials", { ...data, signIn: true, redirectTo: '/' })
   });
   const { mutate: signUpMutate, isPending: isSignUpPending } = useMutation({
-    mutationFn: (data: ISignUp) => signIn("credentials", { ...data, signIn: false })
+    mutationFn: (data: ISignUp) => signIn("credentials", { ...data, signIn: false, redirectTo: '/' })
   });
 
   const { handleSubmit: handleInSubmit, control: inControl, reset: inReset } = useForm<ISignIn>({
@@ -125,7 +125,7 @@ export default function AuthButtons() {
                             required
                           />
                           <Button type="submit" disabled={isSignInPending}>
-                            {isSignInPending ? <Loader size="sm" /> : "Sign In"}
+                            {isSignInPending ? <Loader size="xs" color='dark.2' /> : "Sign In"}
                           </Button>
                         </Stack>
                       </form>
@@ -161,7 +161,7 @@ export default function AuthButtons() {
                             required
                           />
                           <Button type="submit" disabled={isSignUpPending}>
-                            {isSignUpPending ? <Loader size="sm" /> : "Sign Up"}
+                            {isSignUpPending ? <Loader size="xs" color='dark.2' /> : "Sign Up"}
                           </Button>
                         </Stack>
                       </form>

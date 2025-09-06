@@ -26,3 +26,20 @@ export const ZAIArea = z.object({
     })
     .nullable()
 });
+
+export const ZProfileDetails = z.object({
+  email: z.email(),
+  username: z.string()
+    .min(4, "Username must be at least 4 characters long")
+    .max(14, "Username must be at most 14 characters long"),
+  avatar: z.string().min(3, "Avatar must be at least 3 characters long"),
+});
+
+export const ZChangePassword = z.object({
+  old: z.string().min(8, "Old password must be at least 8 characters long"),
+  new: z.string().min(8, "New password must be at least 8 characters long"),
+  confirm: z.string().min(8, "Confirm password must be at least 8 characters long"),
+}).refine((data) => data.new === data.confirm, {
+  message: "New password and confirm password must match",
+  path: ["confirm"],
+});

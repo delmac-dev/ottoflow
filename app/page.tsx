@@ -12,10 +12,11 @@ import { useSession } from 'next-auth/react';
 import BoardContainer from '@/components/board/board-container';
 import SignInBody from '@/components/signin-body';
 import DataContainer from '@/components/data/data-container';
+import Loading from '@/components/loading';
 
 export default function TestPage() {
   const { width, height } = useViewportSize();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const setWidth = useStore(boardStore, (s) => s.setWidth);
   const setHeight = useStore(boardStore, (s) => s.setHeight);
 
@@ -25,7 +26,6 @@ export default function TestPage() {
   const navbarWidth = 300;
 
   useEffect(() => {
-    console.log("session", session);
     const stageHeight = height - (headerSize + footerSize + boardOffset);
     const stageWidth = width - navbarWidth;
     setHeight(stageHeight);
@@ -48,19 +48,23 @@ export default function TestPage() {
   }, []);
 
   return (
-    <AppShell
-      header={{ height: headerSize }}
-      footer={{ height: footerSize, collapsed: !session }}
-      navbar={{ width: navbarWidth, breakpoint: 'xs',  collapsed: { desktop: !session, mobile: !session } }}
-      padding={0}
-      className='overflow-hidden'
-    >
-      <Header />
-      <DataContainer />
-      <AppShell.Main className='relative'>
-        {!session? (<SignInBody />) : (<BoardContainer />)}
-      </AppShell.Main>
-      <Footer />
-    </AppShell>
+    <>
+      {status === "loading" ? (<Loading />) : (
+        <AppShell
+          header={{ height: headerSize }}
+          footer={{ height: footerSize, collapsed: !session }}
+          navbar={{ width: navbarWidth, breakpoint: 'xs',  collapsed: { desktop: !session, mobile: !session } }}
+          padding={0}
+          className='overflow-hidden'
+        >
+          <Header />
+          <DataContainer />
+          <AppShell.Main className='relative'>
+            {status === "unauthenticated" ? (<SignInBody />) : (<BoardContainer />)}
+          </AppShell.Main>
+          <Footer />
+        </AppShell>
+      )}
+    </>
   )
 };

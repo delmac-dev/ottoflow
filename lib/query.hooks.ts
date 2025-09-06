@@ -5,8 +5,9 @@ import keys from "@/lib/keys";
 import * as A from "@/lib/actions";
 import { appStore } from "./stores/app.store";
 import { INode, IProject } from "./types";
+import { signOut } from "next-auth/react";
 
-export function useEditProfile(id: string) {
+export function useEditProfile() {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -14,6 +15,29 @@ export function useEditProfile(id: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: keys.profile })
     },
+  })
+};
+
+export function useChangePassword() {
+  return useMutation({
+    mutationFn: A.changePassword
+  })
+};
+
+export function useGetProfileByID(id: string | null) {
+  const queryKey = keys.profile;
+  const queryFn = async () => await A.getProfileByID(id??"");
+
+  return useQuery({ queryKey, queryFn, enabled: !!id });
+};
+
+export function useDeleteProfile() {
+  return useMutation({
+    mutationFn: A.deleteProfile,
+    onSuccess: async () => {
+      console.log("Profile deleted successfully");
+      await signOut();
+    }
   })
 };
 

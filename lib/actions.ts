@@ -1,6 +1,6 @@
 "use server";
 
-import { IAIArea, INode, IProfile, IProject } from "./types";
+import { IAIArea, INode, IProfile, IProfileDetails, IProject } from "./types";
 import { auth } from "@/auth";
 import { Types } from "mongoose";
 import connect from "@/lib/mongoose";
@@ -29,6 +29,18 @@ export async function getProfileByEmail(email: string){
   };
 };
 
+export async function getProfileByID(id: string) {
+  await connect();
+  const profile = await Profile.findById(id).lean<IProfile & { _id: Types.ObjectId }>();
+  if (!profile) return null;
+
+  return {
+    email: profile.email,
+    username: profile.username,
+    avatar: profile.avatar,
+  };
+}
+
 /**
  * CREATES A NEW PROFILE IN THE DATABASE.
  *
@@ -54,7 +66,7 @@ export async function newProfile(email: string, password: string) {
     username,
     email,
     password: hashedPassword,
-    avatar: 'avatar-1'
+    avatar: 'brown'
   });
 
   const result = await newProfile.save();
@@ -68,20 +80,57 @@ export async function newProfile(email: string, password: string) {
   };
 }
 
-export const editProfile = async ({ profileID, data}: { profileID: string; data: Partial<IProfile>; }) => {
+export const editProfile = async ({ data }: { data: IProfileDetails; }) => {
   await connect();
+  const session = await auth();
+  if (!session || !session.user) return { success: false };
+
+  const { email, ...rest} = data;
 
   const updatedProfile = await Profile.findByIdAndUpdate(
-    profileID,
-    { $set: data },
-    { new: true }
+    session.user.id,
+    { $set: rest },
+    {new: true, runValidators: true, lean: true}
   );
 
   if (!updatedProfile) {
     throw new Error("Profile not found");
   }
 
-  return updatedProfile.toObject();
+  return {success: true};
+};
+
+export const changePassword = async ({old, newPassword}:{old: string; newPassword: string;}) => {
+  await connect();
+
+  const session = await auth();
+  if (!session || !session.user) return { success: false };
+
+  const profile = await Profile.findById(session.user.id);
+  if (!profile) return {success: false};
+
+  const isMatch = await bcrypt.compare(old, profile.password);
+  if (!isMatch) throw new Error("Old password is incorrect");
+
+  const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+  profile.password = hashedNewPassword;
+  await profile.save();
+
+  return { success: true };
+}
+
+export const deleteProfile = async () => {
+  await connect();
+
+  const session = await auth();
+  if (!session || !session.user) return { success: false };
+
+  const profile = await Profile.findById(session.user.id);
+  if (!profile) return { success: false };
+
+  await profile.deleteOne();
+
+  return { success: true };
 };
 
 /**
@@ -152,8 +201,6 @@ export const newProject = async ({ name }: { name: string }) => {
 
 export const getAllProjects = async () => {
   const session = await auth();
-
-  console.log("session", session);
   if (!session || !session.user) return [];
 
   return [];
