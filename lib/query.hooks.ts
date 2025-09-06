@@ -12,10 +12,10 @@ export function useEditProfile() {
 
   return useMutation({
     mutationFn: A.editProfile,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: keys.profile })
+    onSuccess: async (data) => {
+      queryClient.invalidateQueries({ queryKey: keys.profile });
     },
-  })
+  });
 };
 
 export function useChangePassword() {
@@ -35,7 +35,6 @@ export function useDeleteProfile() {
   return useMutation({
     mutationFn: A.deleteProfile,
     onSuccess: async () => {
-      console.log("Profile deleted successfully");
       await signOut();
     }
   })

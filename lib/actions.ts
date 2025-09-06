@@ -91,13 +91,16 @@ export const editProfile = async ({ data }: { data: IProfileDetails; }) => {
     session.user.id,
     { $set: rest },
     {new: true, runValidators: true, lean: true}
-  );
+  ).lean<IProfile & { _id: Types.ObjectId }>();
 
   if (!updatedProfile) {
     throw new Error("Profile not found");
   }
 
-  return {success: true};
+  return {
+    username: updatedProfile.username,
+    avatar: updatedProfile.avatar,
+  };
 };
 
 export const changePassword = async ({old, newPassword}:{old: string; newPassword: string;}) => {
