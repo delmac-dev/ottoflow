@@ -7,7 +7,7 @@ import connect from "@/lib/mongoose";
 import Profile from "@/lib/models/profile";
 import Board from "./models/board";
 import Project from "./models/project";
-import { Type } from "lucide-react";
+import bcrypt from "bcrypt";
 
 /**
  * RETRIEVES A PROFILE FROM THE DATABASE BY THEIR EMAIL ADDRESS.
@@ -16,18 +16,57 @@ import { Type } from "lucide-react";
  * @returns A promise that resolves to the profile object formatted as an IProfile instance.
  */
 export async function getProfileByEmail(email: string){
-    await connect();
+  await connect();
+  const profile = await Profile.findOne({ email }).lean<IProfile & { _id: Types.ObjectId }>();
+  if (!profile) return null;
 
-    const profile = await Profile.findOne({ email }).lean();
-
-    return {
-        id: "1",
-        email: "contact@delalitengue.com",
-        username: "delmac",
-        avatar: "avatar-1",
-        password: "c2f10579c54cb0ac1ea0eb4e006956fdc1392e5738942ca507a96f167f1d597b8f95fd581f72859add1876a8228fab2747e200baaa7a8965bfd704ea0f6e209f"
-    }
+  return {
+    id: profile._id.toString(),
+    email: profile.email,
+    username: profile.username,
+    avatar: profile.avatar,
+    password: profile.password,
+  };
 };
+
+/**
+ * CREATES A NEW PROFILE IN THE DATABASE.
+ *
+ * @param email - The email address for the new profile.
+ * @param password - The password for the new profile.
+ * @returns A promise that resolves to the created profile object.
+ * @throws Error if profile creation fails or email already exists.
+ */
+export async function newProfile(email: string, password: string) {
+  await connect();
+  
+  // Check if profile already exists
+  const existingProfile = await Profile.findOne({ email }).lean();
+  if (existingProfile) {
+    throw new Error("Profile with this email already exists");
+  }
+
+  const username = email.split("@")[0];
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const newProfile = new Profile({
+    username,
+    email,
+    password: hashedPassword,
+    avatar: 'avatar-1'
+  });
+
+  const result = await newProfile.save();
+
+  return {
+    id: result._id.toString(),
+    email: result.email,
+    username: result.username,
+    avatar: result.avatar,
+    password: result.password,
+  };
+}
 
 export const editProfile = async ({ profileID, data}: { profileID: string; data: Partial<IProfile>; }) => {
   await connect();

@@ -1,9 +1,10 @@
+import { Button } from '@mantine/core'
 import React from 'react'
 
 export default function NewProject() {
   return (
     <>
-      <h1>New Project</h1>
+      <Button variant="outline" size='xs'>New Project</Button>
     </>
   )
 }

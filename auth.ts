@@ -4,7 +4,7 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { ZSignIn } from "./lib/schema";
 import { JWT } from "next-auth/jwt";
-import { getProfileByEmail } from "./lib/actions";
+import { getProfileByEmail, newProfile } from "./lib/actions";
 
 declare module "next-auth/jwt" {
   interface JWT {
@@ -13,7 +13,7 @@ declare module "next-auth/jwt" {
 };
 
 export class InvalidLoginError extends CredentialsSignin {
-  code= "Invalid email or password";
+  code = "Invalid email or password";
 }
 
 export const { handlers, auth } = NextAuth({
@@ -23,37 +23,48 @@ export const { handlers, auth } = NextAuth({
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
+        signIn: { label: "Sign In", type: "text" },
       },
       authorize: async (credentials ) => {
+        if (!credentials) return null;
+
+        const isSignIn = credentials.signIn === "true";
         const data = {email: credentials.email, password: credentials.password}
         
         const validatedData = ZSignIn.safeParse(data);
-
-        if (!validatedData.success) throw new InvalidLoginError();
+        if (!validatedData.success) return null;
 
         const { email, password } = validatedData.data;
 
         try {
-          const profile = await getProfileByEmail(email);
-          if (!profile) throw new InvalidLoginError();
+          if (isSignIn) {
+            console.log("signing in");
+            const profile = await getProfileByEmail(email);
+            if (!profile) return null;
 
-          // const isPasswordValid = await bcrypt.compare(
-          //   password,
-          //   profile.password
-          // ); //delmac@123
+            const isPasswordValid = await bcrypt.compare(password, profile.password);
+            if (!isPasswordValid) return null;
 
-          // if (!isPasswordValid) throw new InvalidLoginError();
+            return {
+              id: profile.id,
+              email: profile.email,
+              name: profile.username,
+              image: profile.avatar,
+            };
+          } else {
+            console.log("signing up");
+            const profile = await newProfile(email, password);
 
-          return {
-            id: profile.id,
-            email: profile.email,
-            name: profile.username,
-            image: profile.avatar
-          };
-
-        } catch (error) {
-          console.log("passed",error)
-          throw new InvalidLoginError();
+            return {
+              id: profile.id,
+              email: profile.email,
+              name: profile.username,
+              image: profile.avatar,
+            };
+          }
+        } catch (error:any) {
+          console.log("passed",error.message);
+          throw new Error("Internal server error");
         }
       },
     }),

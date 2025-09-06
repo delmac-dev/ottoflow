@@ -7,7 +7,11 @@ import { signOut } from 'next-auth/react';
 import Image from 'next/image';
 import React from 'react';
 
-export default function Profile(user:User| null) {
+type Props = {
+  user: User | null;
+}
+
+export default function ProfileButton({ user }: Props) {
   const { setColorScheme, colorScheme } = useMantineColorScheme();
 
   const themeOptions = [
