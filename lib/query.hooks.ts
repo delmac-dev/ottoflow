@@ -54,11 +54,11 @@ export function useGetWorkspaceContext({ projectId }: { projectId: string }) {
   return useQuery({ queryKey, queryFn });
 };
 
-export function useNewProject({name}: {name: string}) {
+export function useNewProject() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => A.newProject({name}),
+    mutationFn: A.newProject,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: keys.workspaces })
     },

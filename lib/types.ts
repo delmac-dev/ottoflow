@@ -8,6 +8,7 @@ export type ISignIn = z.infer<typeof Schema.ZSignIn>;
 export type IAIArea = z.infer<typeof Schema.ZAIArea>;
 export type IProfileDetails = z.infer<typeof Schema.ZProfileDetails>;
 export type IChangePassword = z.infer<typeof Schema.ZChangePassword>;
+export type INewProject = z.infer<typeof Schema.ZNewProject>;
 
 export type IQuery = {
   params: {[key: string]: string}

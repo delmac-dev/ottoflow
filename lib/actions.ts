@@ -2,12 +2,13 @@
 
 import { IAIArea, INode, IProfile, IProfileDetails, IProject } from "./types";
 import { auth } from "@/auth";
-import { Types } from "mongoose";
+import mongoose, { Types } from "mongoose";
 import connect from "@/lib/mongoose";
 import Profile from "@/lib/models/profile";
 import Board from "./models/board";
 import Project from "./models/project";
 import bcrypt from "bcrypt";
+import { DEFAULT_PAGE } from "./constant";
 
 /**
  * RETRIEVES A PROFILE FROM THE DATABASE BY THEIR EMAIL ADDRESS.
@@ -177,44 +178,54 @@ export const getWorkspaceContext = async (projectId: string) => {
 
 export const newProject = async ({ name }: { name: string }) => {
   const session = await auth();
-  if (!session || !session.user) return {};
+  if (!session || !session.user) return { success: false };
+
   await connect();
 
   const project = new Project({
     name,
     owner_id: session.user.id,
-    created_at: new Date(),
-    updated_at: new Date()
   });
 
-  const saved = await project.save();
+  const savedProject = await project.save();
 
-  const board  = new Board({
-    name: "Main Board",
-    project_id: saved._id.toString(),
-    root: { type: "root", children: [] },
-    created_at: new Date(),
-    updated_at: new Date()
-  });
+  try {
+    const board = new Board({
+      name: "Board 1",
+      owner_id: session.user.id,
+      project_id: savedProject._id.toString(),
+      root: DEFAULT_PAGE,
+    });
 
-  await board.save();
+    await board.save();
 
-  return saved.toObject();
+    return { success: true };
+  } catch (error) {
+    await Project.findByIdAndDelete(savedProject._id);
+    return { success: false };
+  }
 };
 
 export const getAllProjects = async () => {
   const session = await auth();
   if (!session || !session.user) return [];
 
-  return [];
-  // await connect();
+  await connect();
 
-  // const projects = await Project.find(
-  //   { owner_id: new Types.ObjectId(session.user.id) },
-  //   { _id: 1, name: 1, createdAt: 1, updatedAt: 1 }
-  // ).lean<IProject[]>();
+  const projects = await Project.find(
+    { owner_id: new Types.ObjectId(session.user.id) }
+  )
+    .select("_id name createdAt updatedAt")
+    .lean();
 
-  // return projects;
+  console.log({projects});
+
+  return projects.map((p) => ({
+    id: (p._id as Types.ObjectId).toString(),
+    name: p.name as string,
+    createdAt: p.createdAt as Date,
+    updatedAt: p.updatedAt as Date,
+  }));
 };
 
 export const saveBoardRoot = async ({boardID, root}: {boardID: string; root: INode;}) => {
