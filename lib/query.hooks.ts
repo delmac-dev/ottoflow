@@ -17,9 +17,9 @@ export function useEditProfile(id: string) {
   })
 };
 
-export function useGetAllProjects(ownerID: string) {
+export function useGetAllProjects() {
   const queryKey = keys.workspaces;
-  const queryFn = async () => await A.getAllProjects(ownerID);
+  const queryFn = async () => await A.getAllProjects();
 
   return useQuery({ queryKey, queryFn });
 };
@@ -31,11 +31,11 @@ export function useGetWorkspaceContext({ projectId }: { projectId: string }) {
   return useQuery({ queryKey, queryFn });
 };
 
-export function useNewProject({name, ownerID}: {name: string; ownerID: string;}) {
+export function useNewProject({name}: {name: string}) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => A.newProject({name, ownerID}),
+    mutationFn: () => A.newProject({name}),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: keys.workspaces })
     },

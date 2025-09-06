@@ -1,10 +1,13 @@
 "use server";
 
 import { IAIArea, INode, IProfile, IProject } from "./types";
+import { auth } from "@/auth";
+import { Types } from "mongoose";
 import connect from "@/lib/mongoose";
 import Profile from "@/lib/models/profile";
 import Board from "./models/board";
 import Project from "./models/project";
+import { Type } from "lucide-react";
 
 /**
  * RETRIEVES A PROFILE FROM THE DATABASE BY THEIR EMAIL ADDRESS.
@@ -81,43 +84,48 @@ export const getWorkspaceContext = async (projectId: string) => {
   };
 };
 
-export const newProject = async ({ name, ownerID }: { name: string; ownerID: string; }) => {
+export const newProject = async ({ name }: { name: string }) => {
+  const session = await auth();
+  if (!session || !session.user) return {};
   await connect();
 
   const project = new Project({
     name,
-    owner_id: ownerID,
+    owner_id: session.user.id,
     created_at: new Date(),
     updated_at: new Date()
   });
 
-  await project.save();
+  const saved = await project.save();
 
-  return project.toObject();
+  const board  = new Board({
+    name: "Main Board",
+    project_id: saved._id.toString(),
+    root: { type: "root", children: [] },
+    created_at: new Date(),
+    updated_at: new Date()
+  });
+
+  await board.save();
+
+  return saved.toObject();
 };
 
-export const getAllProjects = async (ownerID: string) => {
-  await connect();
+export const getAllProjects = async () => {
+  const session = await auth();
 
-  const projects = await Project.find(
-    { owner_id: ownerID }, 
-    { _id: 1, name: 1, created_at: 1, updated_at: 1 }
-  ).lean();
+  console.log("session", session);
+  if (!session || !session.user) return [];
 
-  return projects;
-};
+  return [];
+  // await connect();
 
-//for ai xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-export const getProject = async (projectID: string) => {
-  await connect();
+  // const projects = await Project.find(
+  //   { owner_id: new Types.ObjectId(session.user.id) },
+  //   { _id: 1, name: 1, createdAt: 1, updatedAt: 1 }
+  // ).lean<IProject[]>();
 
-  const project = await Project.findById(projectID).lean();
-
-  if (!project) {
-    throw new Error("Project not found");
-  }
-
-  return project;
+  // return projects;
 };
 
 export const saveBoardRoot = async ({boardID, root}: {boardID: string; root: INode;}) => {
