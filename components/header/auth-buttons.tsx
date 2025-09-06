@@ -110,8 +110,20 @@ export default function AuthButtons() {
                       </Title>
                       <form onSubmit={handleInSubmit(onSignInSubmit)}>
                         <Stack>
-                          <TextInput label="Email" placeholder="you@example.com" {...inEmailControl.field} required />
-                          <PasswordInput label="Password" placeholder="Your password" {...inPasswordControl.field} required />
+                          <TextInput
+                            label="Email"
+                            placeholder="you@example.com"
+                            {...inEmailControl.field}
+                            error={inEmailControl.fieldState?.error?.message}
+                            required
+                          />
+                          <PasswordInput
+                            label="Password"
+                            placeholder="Your password"
+                            {...inPasswordControl.field}
+                            error={inPasswordControl.fieldState?.error?.message}
+                            required
+                          />
                           <Button type="submit" disabled={isSignInPending}>
                             {isSignInPending ? <Loader size="sm" /> : "Sign In"}
                           </Button>

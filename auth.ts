@@ -25,25 +25,24 @@ export const { handlers, auth } = NextAuth({
         password: { label: "Password", type: "password" },
         signIn: { label: "Sign In", type: "text" },
       },
-      authorize: async (credentials ) => {
-        if (!credentials) return null;
+      authorize: async (credentials) => {
+        if (!credentials) throw new InvalidLoginError();
 
         const isSignIn = credentials.signIn === "true";
-        const data = {email: credentials.email, password: credentials.password}
+        const data = { email: credentials.email, password: credentials.password };
         
         const validatedData = ZSignIn.safeParse(data);
-        if (!validatedData.success) return null;
+        if (!validatedData.success) throw new InvalidLoginError();
 
         const { email, password } = validatedData.data;
 
         try {
           if (isSignIn) {
-            console.log("signing in");
             const profile = await getProfileByEmail(email);
-            if (!profile) return null;
+            if (!profile) throw new InvalidLoginError();
 
             const isPasswordValid = await bcrypt.compare(password, profile.password);
-            if (!isPasswordValid) return null;
+            if (!isPasswordValid) throw new InvalidLoginError();
 
             return {
               id: profile.id,
@@ -52,9 +51,7 @@ export const { handlers, auth } = NextAuth({
               image: profile.avatar,
             };
           } else {
-            console.log("signing up");
             const profile = await newProfile(email, password);
-
             return {
               id: profile.id,
               email: profile.email,
@@ -62,8 +59,8 @@ export const { handlers, auth } = NextAuth({
               image: profile.avatar,
             };
           }
-        } catch (error:any) {
-          console.log("passed",error.message);
+        } catch (error) {
+          if (error instanceof InvalidLoginError) throw error;
           throw new Error("Internal server error");
         }
       },
@@ -72,23 +69,14 @@ export const { handlers, auth } = NextAuth({
   ],
   callbacks: {
     async jwt({ token, user }) {
-      if (user) {
+      if (user?.id) {
         token.id = user.id;
-        token.email = user.email;
-        token.name = user.name;
-        token.picture = user.image;
       }
       return token;
     },
     async session({ session, token }) {
-      if (token) {
-        session.user = {
-          id: token.id || "",
-          email: token.email || "",
-          name: token.name,
-          emailVerified: new Date(),
-          image: token.picture
-        };
+      if (token?.id) {
+        session.user.id = token.id;
       }
       return session;
     },
