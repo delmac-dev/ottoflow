@@ -48,6 +48,19 @@ export const handleTransformEnd = (e: KonvaMouseEvent) => {
       break;
     }
 
+    case "Arrow":
+    case "Line": {
+      const lineNode = node as Konva.Line;
+      updateRoot(id, (currentNode) => ({
+        ...currentNode,
+        x: lineNode.x(),
+        y: lineNode.y(),
+        points: lineNode.points(),
+        rotation: lineNode.rotation(),
+      }));
+      break;
+    }
+
     default: {
       // Rect, Image, Text, etc.
       updateRoot(id, (currentNode) => ({

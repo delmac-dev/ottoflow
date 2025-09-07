@@ -3,6 +3,8 @@ import React from "react";
 import OttoPage from "../board-elements/otto-page";
 import OttoRect from "../board-elements/otto-rect";
 import OttoCircle from "../board-elements/otto-circle";
+import OttoArrow from "../board-elements/otto-arrow";
+import OttoFrame from "../board-elements/otto-frame";
 
 type Props = {
   node: INode,
@@ -17,15 +19,16 @@ export default function RenderNode({node, optionalName}:Props) {
         )}
       </OttoPage>
     );
-    // case "Frame": return (
-    //   <OttoFrame node={node}>
-    //     {node.children?.map( (childNode) => 
-    //       <RenderNode key={childNode.id} node={childNode} />
-    //     )}
-    //   </OttoFrame>
-    // );
+    case "Frame": return (
+      <OttoFrame node={node}>
+        {node.children?.map( (childNode) => 
+          <RenderNode key={childNode.id} node={childNode} optionalName={"frame-child"} />
+        )}
+      </OttoFrame>
+    );
     case "Rect": return <OttoRect node={node} optionalName={optionalName} />;
     case "Circle": return <OttoCircle node={node} optionalName={optionalName} />;
+    case "Arrow": return <OttoArrow node={node} optionalName={optionalName} />;
     default: return null;
   }
 };

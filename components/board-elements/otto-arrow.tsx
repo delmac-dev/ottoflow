@@ -1,17 +1,43 @@
+import { handleDragEnd, handleDragStart, handleTransformEnd } from '@/lib/handlers'
+import { INode } from '@/lib/types'
 import React from 'react'
 import { Arrow } from 'react-konva'
 
-const OttoArrow = () => {
+type Props = {
+  node: INode,
+  optionalName?: string
+}
+
+const OttoArrow = ({ node, optionalName }: Props) => {
   return (
     <Arrow
-      x={window.innerWidth / 4}
-      y={window.innerHeight / 4}
-      points={[0, 0, 100, 100]}
-      pointerLength={20}
-      pointerWidth={20}
-      fill="black"
-      stroke="black"
-      strokeWidth={4}
+      id={node.id}
+      name={`${node.name} ${optionalName}`}
+      nodeType={node.type}
+
+      visible={node.visible}
+      rotation={node.rotation}
+      opacity={node.opacity}
+      x={node.x}
+      y={node.y}
+      points={node.points || []}
+      pointerLength={node.pointerLength}
+      pointerWidth={node.pointerWidth}
+      fill={node.fill}
+      stroke={node.stroke}
+      strokeWidth={node.strokeWidth}
+
+      shadowColor={node.shadow?.color}
+      shadowBlur={node.shadow?.blur}
+      shadowOffsetX={node.shadow?.x}
+      shadowOffsetY={node.shadow?.y}
+      shadowOpacity={node.shadow?.opacity}
+
+      draggable
+      
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      onTransformEnd={handleTransformEnd}
     />
   )
 }

@@ -40,6 +40,7 @@ interface IBoardStore {
 
   selectedNodes: string[];
   setSelectedNodes: (ids: string[]) => void;
+  toggleSelectedNode: (id: string) => void;
 
   mode: BoardMode;
   setMode: (mode: BoardMode) => void;
@@ -80,6 +81,12 @@ export const boardStore = createStore<IBoardStore>()(subscribeWithSelector(
       set({ selectionNet: { ...get().selectionNet, visible: false } });
     },
     setSelectedNodes: (nodes: string[]) => set({ selectedNodes: nodes }),
+    toggleSelectedNode: (id) =>
+    set((state) => ({
+      selectedNodes: state.selectedNodes.includes(id)
+        ? state.selectedNodes.filter((nid) => nid !== id) // remove if exists
+        : [...state.selectedNodes, id], // add if not
+    })),
     setWidth: (width: number) => set({ width }),
     setHeight: (height: number) => set({ height }),
     setMode: (mode: BoardMode) => set({ mode }),

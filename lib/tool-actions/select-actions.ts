@@ -10,35 +10,42 @@ export const click = (e: KonvaMouseEvent) => {
   const target = e.target;
   const isEmptyAreaClick =
     target === target.getStage() ||
-    target.getType() === 'Layer' ||
-    target.hasName('background');
+    target.getType() === "Layer" ||
+    target.hasName("background");
 
-  // If click on empty area - remove all selections
   if (isEmptyAreaClick) {
     setSelectedNodes([]);
     return;
-  };
+  }
 
-  // Do nothing if clicked NOT on our rectangles
-  if (!target.hasName('root-child')) return;
+  if (!target.hasName("root-child")) return;
 
-  const clickedId = target.id();
-  const metaPressed = e.evt.shiftKey || e.evt.ctrlKey || e.evt.metaKey;
+  let clickedId = target.id();
+  const shiftPressed = e.evt.shiftKey;
+  const ctrlPressed = e.evt.ctrlKey || e.evt.metaKey;
+
+  // Shift: climb up to group if exists
+  if (shiftPressed) {
+    const group = target.findAncestor("Group", true);
+    if (group && group.hasName("root-child")) {
+      clickedId = group.id();
+    }
+  }
+
   const isSelected = selectedNodes.includes(clickedId);
 
-  if (!metaPressed && !isSelected) {
-    // If no key pressed and the node is not selected
-    // select just one
+  if (ctrlPressed) {
+    // Multi-select toggle
+    if (isSelected) {
+      setSelectedNodes(selectedNodes.filter((id) => id !== clickedId));
+    } else {
+      setSelectedNodes([...selectedNodes, clickedId]);
+    }
+  } else {
+    // Replace selection
     setSelectedNodes([clickedId]);
-  } else if (metaPressed && isSelected) {
-    // If we pressed keys and node was selected
-    // we need to remove it from selection
-    setSelectedNodes(selectedNodes.filter(id => id !== clickedId));
-  } else if (metaPressed && !isSelected) {
-    // Add the node into selection
-    setSelectedNodes([...selectedNodes, clickedId]);
   }
-}
+};
 
 export const mouseDown = (e: KonvaMouseEvent) => {
   const { setSelectionNet, setMode } = boardStore.getState();

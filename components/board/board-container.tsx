@@ -28,7 +28,7 @@ export default function BoardContainer() {
             </Text>
           </Tabs.Tab>
         </Tabs.List>
-        <Tabs.Panel value={"1"}>
+        <Tabs.Panel value={"1"} className='relative'>
           <Board />
         </Tabs.Panel>
       </Tabs>
