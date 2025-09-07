@@ -3,11 +3,11 @@ import Konva from 'konva';
 import React, { useEffect } from 'react'
 import { Layer } from 'react-konva';
 import { useStore } from 'zustand';
+import RenderNode from './render-node';
 
 export default function ContentLayer() {
   const pageRef = React.useRef<Konva.Group>(null);
-  const width = useStore(boardStore, (state) => state.width);
-  const height = useStore(boardStore, (state) => state.height);
+  const root = useStore(boardStore, (s) => s.root);
 
   useEffect(() => {
     const unsub = boardStore.subscribe(
@@ -28,6 +28,7 @@ export default function ContentLayer() {
   
   return (
     <Layer name='content-layer'>
+      {root ? <RenderNode node={root} /> : null}
     </Layer>
   )
 }

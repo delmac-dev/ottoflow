@@ -10,11 +10,7 @@ import mouseMove from '@/lib/handlers/mouse-move';
 import mouseUp from '@/lib/handlers/mouse-up';
 import ContentLayer from './content-layer';
 
-type Props = {
-  id: string;
-}
-
-export default function Board({ id }: Props) {
+export default function Board() {
   const width = useStore(boardStore, (s) => s.width);
   const height = useStore(boardStore, (s) => s.height);
 

@@ -1,6 +1,6 @@
 "use server";
 
-import { IAIArea, INode, IProfile, IProfileDetails, IProject } from "./types";
+import { IAIArea, IBoard, INode, IProfile, IProfileDetails, IProject } from "./types";
 import { auth } from "@/auth";
 import mongoose, { Types } from "mongoose";
 import connect from "@/lib/mongoose";
@@ -167,12 +167,19 @@ export const aiChat = async (data: IAIArea) => {
 export const getWorkspaceContext = async (projectId: string) => {
   await connect();
   
-  const project = await Project.findById(projectId).lean();
-  const boards = await Board.find({ project_id: projectId }).lean();
+  const project = await Project.findById(projectId).lean<IProject>();
+  const board = await Board.findOne({ project_id: projectId }).lean<IBoard & { _id: Types.ObjectId }>();
 
   return {
-    project,
-    boards
+    project : {
+      data: project?.data || [],
+      properties: project?.properties || []
+    },
+    board: {
+      id: board?._id.toString() || "",
+      root: board?.root || null,
+      name: board?.name || ""
+    }
   };
 };
 
@@ -199,12 +206,53 @@ export const newProject = async ({ name }: { name: string }) => {
 
     await board.save();
 
-    return { success: true };
+    return { success: true, id: savedProject._id.toString() };
   } catch (error) {
     await Project.findByIdAndDelete(savedProject._id);
     return { success: false };
   }
 };
+
+export const editProjectName = async ({projectID, name}: {projectID: string; name: string;}) => {
+  const session = await auth();
+  if (!session || !session.user) return { success: false };
+  await connect();
+
+  const updatedProject = await Project.findOneAndUpdate(
+    { _id: projectID, owner_id: session.user.id },
+    { $set: { name } },
+    { new: true }
+  );
+
+  if (!updatedProject) {
+    throw new Error("Project not found");
+  }
+
+  return { success: true };
+};
+
+export const deleteProject = async ({projectID}:{projectID:string}) => {
+  const session = await auth();
+  if (!session || !session.user) return { success: false };
+
+  await connect();
+
+  try {
+    // Delete all boards associated with the project
+    await Board.deleteMany({ project_id: projectID });
+    
+    // Delete the project itself
+    const deletedProject = await Project.findByIdAndDelete(projectID);
+    
+    if (!deletedProject) {
+      return { success: false };
+    }
+
+    return { success: true };
+  } catch (error) {
+    return { success: false };
+  }
+}
 
 export const getAllProjects = async () => {
   const session = await auth();
@@ -217,8 +265,6 @@ export const getAllProjects = async () => {
   )
     .select("_id name createdAt updatedAt")
     .lean();
-
-  console.log({projects});
 
   return projects.map((p) => ({
     id: (p._id as Types.ObjectId).toString(),

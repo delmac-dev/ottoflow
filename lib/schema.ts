@@ -49,3 +49,9 @@ export const ZNewProject = z.object({
     .min(2, "Project name must be at least 2 characters long")
     .max(100, "Project name must be at most 100 characters long"),
 });
+
+export const ZEditProjectName = z.object({
+  name: z.string()
+    .min(2, "Project name must be at least 2 characters long")
+    .max(100, "Project name must be at most 100 characters long"),
+});

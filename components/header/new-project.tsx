@@ -4,12 +4,14 @@ import { INewProject } from '@/lib/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Modal, Stack, TextInput } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks';
+import { useRouter } from 'next/navigation';
 import React, { use, useEffect } from 'react'
 import { useController, useForm } from 'react-hook-form';
 
 export default function NewProject() {
   const [opened, { open, close }] = useDisclosure(false);
-  const { mutate, isPending, isSuccess } = useNewProject();
+  const router = useRouter();
+  const { mutate, isPending, isSuccess, data } = useNewProject();
 
   const { handleSubmit, control, reset } = useForm<INewProject>({
     defaultValues: {
@@ -33,6 +35,7 @@ export default function NewProject() {
   useEffect(() => {
     if (isSuccess) {
       close();
+      router.push(`/?id=${data.id}`);
     }
   }, [isSuccess]);
 

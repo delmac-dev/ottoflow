@@ -24,6 +24,28 @@ export function useChangePassword() {
   })
 };
 
+export function useEditProjectName() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: A.editProjectName,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: keys.workspaces });
+    },
+  });
+};
+
+export function useDeleteProject() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: A.deleteProject,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: keys.workspaces });
+    },
+  });
+};
+
 export function useGetProfileByID(id: string | null) {
   const queryKey = keys.profile;
   const queryFn = async () => await A.getProfileByID(id??"");
@@ -47,11 +69,11 @@ export function useGetAllProjects() {
   return useQuery({ queryKey, queryFn });
 };
 
-export function useGetWorkspaceContext({ projectId }: { projectId: string }) {
+export function useGetWorkspaceContext(projectId: string) {
   const queryKey = keys.workspaceContext(projectId);
   const queryFn = async () => await A.getWorkspaceContext(projectId);
 
-  return useQuery({ queryKey, queryFn });
+  return useQuery({ queryKey, queryFn, enabled: !!projectId });
 };
 
 export function useNewProject() {
@@ -107,7 +129,7 @@ export function useAIChat() {
   return useMutation({
     mutationFn: A.aiChat,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: keys.workspaceContext(projectID) });
+      queryClient.invalidateQueries({ queryKey: keys.workspaceContext(projectID??"") });
     },
   })
 }

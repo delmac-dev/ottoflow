@@ -1,4 +1,3 @@
-import Konva from "konva";
 import { createStore } from "zustand/vanilla";
 import { subscribeWithSelector } from "zustand/middleware";
 import { Action, BoardMode, INode } from "../types";
@@ -13,6 +12,11 @@ interface ISelectionNet {
 }
 
 interface IBoardStore {
+  boardID: string,
+  name: string,
+  setBoardID: (id:string) => void,
+  setName: (name:string) => void
+
   width: number;
   height: number;
   activeTool: Action;
@@ -43,6 +47,8 @@ interface IBoardStore {
 
 export const boardStore = createStore<IBoardStore>()(subscribeWithSelector(
   (set, get) => ({
+    name: "",
+    boardID: "",
     width: 1200,
     height: 600,
     activeTool: Action.Select,
@@ -58,6 +64,9 @@ export const boardStore = createStore<IBoardStore>()(subscribeWithSelector(
     },
     root: null,
 
+    setName: (name) => set({name}),
+    setBoardID: (id) => set({boardID: id}),
+    
     setSelectionNet: (selectionNet: ISelectionNet) => {
       set({ selectionNet: { ...selectionNet } });
     },
