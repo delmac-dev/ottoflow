@@ -46,7 +46,7 @@ export default function TreePanel() {
   }, [selectedNodes, tree]);
 
   return (
-    <Stack className='absolute overflow-hidden w-56 left-0 top-12 bottom-3 bg-dark-700 rounded-r-sm border border-l-0 border-dark-400'>
+    <Stack className='absolute overflow-hidden w-56 left-0 top-12 bottom-3 bg-dark-700 rounded-r-md border border-l-0 border-dark-400'>
       <ScrollArea className="w-full flex-1 p-1">
         <Tree
           tree={tree}

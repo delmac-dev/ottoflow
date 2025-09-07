@@ -51,7 +51,7 @@ export const mouseDown = (e: KonvaMouseEvent) => {
   const { setSelectionNet, setMode } = boardStore.getState();
 
   const target = e.target;
-
+  console.log(target);
   const isEmptyArea =
     target === target.getStage() ||
     target.getType() === 'Layer' ||
@@ -115,7 +115,8 @@ export const mouseUp = (e: KonvaMouseEvent) => {
   const stage = e.target.getStage();
   if (!stage) return;
 
-  const elements = stage.find('.rect');
+  const elements = stage.find('.root-child');
+  
   const selected = elements.filter(el =>
     Konva.Util.haveIntersection(net, el.getClientRect())
   );

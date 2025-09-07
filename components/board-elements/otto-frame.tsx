@@ -36,6 +36,7 @@ const OttoFrame = ({ node, optionalName, children }: Props) => {
         id={`rect-${node.id}`}
         name={"frame-background"}
         nodeType={"Background"}
+        listening={false}
 
         x={0}
         y={0}
@@ -62,7 +63,7 @@ const OttoFrame = ({ node, optionalName, children }: Props) => {
         y={component?.y || 0}
         width={component?.width}
         height={component?.height}
-
+        listening={false}
         visible={component?.visible}
         rotation={component?.rotation}
         opacity={component?.opacity}

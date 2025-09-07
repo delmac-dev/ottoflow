@@ -10,6 +10,7 @@ import mouseMove from '@/lib/handlers/mouse-move';
 import mouseUp from '@/lib/handlers/mouse-up';
 import ContentLayer from './content-layer';
 import TreePanel from './tree-panel';
+import PropertiesPanel from './properties-panel';
 
 export default function Board() {
   const width = useStore(boardStore, (s) => s.width);
@@ -32,6 +33,7 @@ export default function Board() {
         <SelectionLayer />
       </Stage>
       <TreePanel />
+      <PropertiesPanel />
     </>
   )
 };

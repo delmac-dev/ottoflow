@@ -20,7 +20,7 @@ export default function RenderNode({node, optionalName}:Props) {
       </OttoPage>
     );
     case "Frame": return (
-      <OttoFrame node={node}>
+      <OttoFrame node={node} optionalName={optionalName}>
         {node.children?.map( (childNode) => 
           <RenderNode key={childNode.id} node={childNode} optionalName={"frame-child"} />
         )}
