@@ -1,8 +1,27 @@
+import { DEFAULT_CIRCLE } from "../constant";
 import { boardStore } from "../stores/board.store";
-import { BoardMode, KonvaMouseEvent } from "../types";
+import { BoardMode, INode, KonvaMouseEvent } from "../types";
+import { getDropTarget } from "../utils";
+import { v4 as uuidv4 } from "uuid";
 
 export const click = (e: KonvaMouseEvent) => {
-  console.log("Create circle at", e.target.getStage()?.getPointerPosition());
+  const { addNode } = boardStore.getState();
+
+  const result = getDropTarget(e);
+  if (!result) return;
+
+  const { parentId, relativePos } = result;
+
+  // new circle node
+  const newNode: INode = {
+    ...DEFAULT_CIRCLE,
+    id: uuidv4(),
+    x: relativePos.x,
+    y: relativePos.y,
+  };
+
+  // add it to the tree
+  addNode(parentId, newNode);
 };
 
 export const mouseDown = (e: KonvaMouseEvent) => {

@@ -20,7 +20,7 @@ export const click = (e: KonvaMouseEvent) => {
   };
 
   // Do nothing if clicked NOT on our rectangles
-  if (!target.hasName('node tracked')) return;
+  if (!target.hasName('root-child')) return;
 
   const clickedId = target.id();
   const metaPressed = e.evt.shiftKey || e.evt.ctrlKey || e.evt.metaKey;

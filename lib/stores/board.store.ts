@@ -14,8 +14,11 @@ interface ISelectionNet {
 interface IBoardStore {
   boardID: string,
   name: string,
-  setBoardID: (id:string) => void,
-  setName: (name:string) => void
+  setBoardID: (id: string) => void,
+  setName: (name: string) => void,
+
+  isSaving: boolean;
+  setIsSaving: (isSaving: boolean) => void;
 
   width: number;
   height: number;
@@ -23,10 +26,11 @@ interface IBoardStore {
   setWidth: (width: number) => void;
   setHeight: (height: number) => void;
   setActiveTool: (tool: Action) => void;
-  
+
   root: INode | null;
   setRoot: (root: INode) => void;
-  updateRoot: (id:string, updater: (node: INode) => INode) => void;
+  updateRoot: (id: string, updater: (node: INode) => INode) => void;
+  addNode: (parentId: string, newNode: INode) => void;
   getNode: (id: string) => INode | undefined;
   removeNode: (id: string) => void;
 
@@ -36,7 +40,7 @@ interface IBoardStore {
 
   selectedNodes: string[];
   setSelectedNodes: (ids: string[]) => void;
-  
+
   mode: BoardMode;
   setMode: (mode: BoardMode) => void;
 
@@ -51,6 +55,7 @@ export const boardStore = createStore<IBoardStore>()(subscribeWithSelector(
     boardID: "",
     width: 1200,
     height: 600,
+    isSaving: false,
     activeTool: Action.Select,
     shouldDownload: false,
     mode: BoardMode.Idle,
@@ -64,9 +69,10 @@ export const boardStore = createStore<IBoardStore>()(subscribeWithSelector(
     },
     root: null,
 
-    setName: (name) => set({name}),
-    setBoardID: (id) => set({boardID: id}),
-    
+    setName: (name) => set({ name }),
+    setBoardID: (id) => set({ boardID: id }),
+    setIsSaving: (isSaving: boolean) => set({ isSaving }),
+
     setSelectionNet: (selectionNet: ISelectionNet) => {
       set({ selectionNet: { ...selectionNet } });
     },
@@ -80,12 +86,27 @@ export const boardStore = createStore<IBoardStore>()(subscribeWithSelector(
     setActiveTool: (tool: Action) => set({ activeTool: tool }),
     triggerDownload: () => set({ shouldDownload: true }),
     clearDownload: () => set({ shouldDownload: false }),
-    
+
     setRoot: (root: INode) => set({ root }),
-    updateRoot: (id:string, updater: (node: INode) => INode) => {
+    updateRoot: (id: string, updater: (node: INode) => INode) => {
       set(state => ({
         root: state.root ? updateNodeById(state.root, id, updater) : null
       }));
+    },
+    addNode: (parentId: string, newNode: INode) => {
+      const root = get().root;
+      if (!root) return;
+
+      // Use updateRoot instead of direct mutation
+      get().updateRoot(parentId, (parent) => {
+        // Only "Page" or "Frame" can have children
+        if (parent.type !== "Page" && parent.type !== "Frame") return parent;
+
+        return {
+          ...parent,
+          children: [...(parent.children || []), newNode]
+        };
+      });
     },
     getNode: (id: string) => {
       const state = get();

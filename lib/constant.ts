@@ -84,8 +84,6 @@ export const DEFAULT_CIRCLE: INode = {
   type: "Circle",
   x: 0,
   y: 0,
-  width: 100,
-  height: 100,
   rotation: 0,
   opacity: 1,
   visible: true,
@@ -93,7 +91,7 @@ export const DEFAULT_CIRCLE: INode = {
   fillGradient: undefined,
   stroke: undefined,
   strokeWidth: undefined,
-  radius: undefined
+  radius: 100
 };
 
 export const DEFAULT_ELLIPSE: INode = {

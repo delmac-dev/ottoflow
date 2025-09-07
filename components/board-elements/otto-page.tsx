@@ -17,7 +17,7 @@ export default function OttoPage({ node, children }: Props) {
     <Group
       id={node.id}
       name={node.name}
-      type={node.type}
+      nodeType={"Page"}
       x={(width - (node.width ?? 0)) / 2}
       y={(height - (node.height ?? 0)) / 2}
       width={node.width}
@@ -29,8 +29,8 @@ export default function OttoPage({ node, children }: Props) {
     >
       <Rect
         id={`rect-${node.id}`}
-        name={"Page Background"}
-        type={"Page-Background"}
+        name={"background"}
+        nodeType={"Background"}
 
         x={node.x}
         y={node.y}

@@ -285,23 +285,7 @@ export const saveBoardRoot = async ({boardID, root}: {boardID: string; root: INo
     throw new Error("Board not found");
   }
 
-  return updatedBoard.toObject();
-};
-
-export const changeProjectName = async ({projectID, name}: {projectID: string; name: string;}) => {
-  await connect();
-
-  const updatedProject = await Project.findByIdAndUpdate(
-    projectID,
-    { $set: { name } },
-    { new: true }
-  );
-
-  if (!updatedProject) {
-    throw new Error("Project not found");
-  }
-
-  return updatedProject.toObject();
+  return { success: true };
 };
 
 //save schedule data

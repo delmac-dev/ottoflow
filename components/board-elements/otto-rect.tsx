@@ -1,14 +1,20 @@
-import { handleDragEnd, handleTransformEnd } from '@/lib/handlers'
+import { handleDragEnd, handleDragStart, handleTransformEnd } from '@/lib/handlers'
 import { INode } from '@/lib/types'
 import React from 'react'
-import { Rect } from 'react-konva'
+import { Rect } from 'react-konva';
 
-const OttoRect = ({ node }: { node: INode }) => {
+type Props = {
+  node: INode,
+  optionalName?: string
+}
+
+const OttoRect = ({ node, optionalName }: Props) => {
+
   return (
     <Rect
       id={node.id}
-      name={node.name}
-      type={node.type}
+      name={`${node.name} ${optionalName}`}
+      nodeType={node.type}
 
       x={node.x}
       y={node.y}
@@ -32,6 +38,7 @@ const OttoRect = ({ node }: { node: INode }) => {
 
       draggable
 
+      onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
       onTransformEnd={handleTransformEnd}
     />

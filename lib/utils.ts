@@ -1,6 +1,7 @@
 import { ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { INode } from "./types";
+import { INode, KonvaMouseEvent } from "./types";
+import Konva from "konva";
 
 /**
  * COMBINES AND MERGES CSS CLASS NAMES WITH PROPER CONFLICT RESOLUTION.
@@ -88,4 +89,43 @@ export function removeNodeById(root: INode, id: string): INode {
 
   // non-container nodes stay as-is
   return root;
-}
+};
+
+/**
+ * GETS THE PARENT NODE ID AND RELATIVE POSITION FOR ADDING NEW NODES.
+ * 
+ * @param e - Konva mouse event object
+ * @returns Object containing parentId and relativePos, or null if not found
+ */
+export const getDropTarget = (e: KonvaMouseEvent) => {
+  const stage = e.target.getStage();
+  if (!stage) return null;
+
+  let group;
+  let parentId;
+  let relativePos;
+
+  if (e.evt.shiftKey) {
+    // find the group (parent node) id
+    group = e.target.findAncestor("Group"); // Konva Group
+    if (!group) {
+      console.log("No group found");
+      return null;
+    }
+    parentId = group.id();
+    relativePos = group.getRelativePointerPosition();
+  } else {
+    // find the first group with name "background"
+    group = stage.findOne((node: Konva.Group) => node.getType() === "Group" && node.name() === "page");
+    if (!group) {
+      console.log("No background group found");
+      return null;
+    }
+    parentId = group.id();
+    relativePos = group.getRelativePointerPosition();
+  }
+
+  if (!relativePos) return null;
+
+  return { parentId, relativePos };
+};

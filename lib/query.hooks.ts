@@ -87,38 +87,21 @@ export function useNewProject() {
   })
 };
 
-export function useSaveBoardRoot({boardID, root}: {boardID: string; root: INode;}) {
-  const queryClient = useQueryClient();
-
+export function useSaveBoardRoot() {
   return useMutation({
-    mutationFn: () => A.saveBoardRoot({boardID, root}),
+    mutationFn: A.saveBoardRoot,
   })
 };
 
-export function useChangeProjectName({projectID, name}: {projectID: string; name: string;}) {
-  const queryClient = useQueryClient();
-
+export function useSaveProjectData() {
   return useMutation({
-    mutationFn: () => A.changeProjectName({projectID, name}),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: keys.workspaces })
-    },
+    mutationFn: A.saveProjectData,
   })
 };
 
-export function useSaveProjectData({projectID, data}: {projectID: string; data: IProject["data"];}) {
-  const queryClient = useQueryClient();
-
+export function useSaveProjectProperties() {
   return useMutation({
-    mutationFn: () => A.saveProjectData({projectID, data}),
-  })
-};
-
-export function useSaveProjectProperties({projectID, properties}: {projectID: string; properties: IProject["properties"];}) {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: () => A.saveProjectProperties({projectID, properties}),
+    mutationFn: A.saveProjectProperties,
   })
 };
 
