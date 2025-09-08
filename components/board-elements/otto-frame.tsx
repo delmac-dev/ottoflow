@@ -1,4 +1,4 @@
-import { handleDragEnd, handleDragStart } from '@/lib/handlers'
+import { handleDragEnd, handleDragStart, handleTransformEnd } from '@/lib/handlers'
 import { INode } from '@/lib/types'
 import React from 'react'
 import { Group, Rect } from 'react-konva'
@@ -30,13 +30,12 @@ const OttoFrame = ({ node, optionalName, children }: Props) => {
 
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
-      onTransformEnd={handleDragEnd}
+      onTransformEnd={handleTransformEnd}
     >
       <Rect
         id={`rect-${node.id}`}
         name={"frame-background"}
         nodeType={"Background"}
-        listening={false}
 
         x={0}
         y={0}
@@ -63,7 +62,7 @@ const OttoFrame = ({ node, optionalName, children }: Props) => {
         y={component?.y || 0}
         width={component?.width}
         height={component?.height}
-        listening={false}
+        
         visible={component?.visible}
         rotation={component?.rotation}
         opacity={component?.opacity}
@@ -72,7 +71,6 @@ const OttoFrame = ({ node, optionalName, children }: Props) => {
           id={`rect-${component?.id}`}
           name={"component-background"}
           nodeType={"Background"}
-          listening={false}
 
           x={0}
           y={0}

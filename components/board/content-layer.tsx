@@ -39,13 +39,18 @@ export default function ContentLayer() {
   useEffect(() => {
     if (selectedNodes.length && transformerRef.current) {
       // Get the nodes from the refs Map
-      const nodes = selectedNodes.reduce<Konva.Rect[]>((acc, id) => {
-        const node = transformerRef.current?.getStage()?.findOne(`#${id}`) as Konva.Rect;
-        if (node) acc.push(node);
-        return acc;
-      }, []);
+      const node = transformerRef.current?.getStage()?.findOne(`#${selectedNodes[0]}`);
+      if(!node) return;
 
-      transformerRef.current.nodes(nodes);
+      // Set the nodes to the transformer
+      if(node.getAttr('nodeType') === "Circle") {
+        transformerRef.current?.enabledAnchors(['top-left', 'top-right', 'bottom-left', 'bottom-right']);
+      } else if(node.getAttr('nodeType') === "Text") {
+        transformerRef.current?.enabledAnchors(['middle-left', 'middle-right']);
+      } else {
+        transformerRef.current?.enabledAnchors(['top-left', 'top-center', 'top-right', 'middle-left', 'middle-right', 'bottom-left', 'bottom-center', 'bottom-right']);
+      }
+      transformerRef.current.nodes([node]);
     } else if (transformerRef.current) {
       // Clear selection
       transformerRef.current.nodes([]);
@@ -73,6 +78,8 @@ export default function ContentLayer() {
 
       <Transformer
         ref={transformerRef}
+        rotationSnaps={[0, 90, 180, 270]}
+        rotationSnapTolerance={30}
         boundBoxFunc={(oldBox, newBox) => {
           // Limit resize
           if (newBox.width < 5 || newBox.height < 5) {

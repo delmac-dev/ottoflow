@@ -10,12 +10,13 @@ export const click = (e: KonvaMouseEvent) => {
   const result = getDropTarget(e);
   if (!result) return;
 
-  const { parentId, relativePos } = result;
+  const { parentId, relativePos, isPage } = result;
 
   // new rect node
   const newNode: INode = {
     ...DEFAULT_RECT,
     id: uuidv4(),
+    name: `${DEFAULT_RECT.name} ${!isPage ? "frame-element" : ""}`,
     x: relativePos.x,
     y: relativePos.y,
   };

@@ -249,7 +249,7 @@ export const DEFAULT_TEXT: INode = {
   x: 0,
   y: 0,
   width: 100,
-  height: 100,
+  height: undefined,
   rotation: 0,
   opacity: 1,
   visible: true,
@@ -257,14 +257,15 @@ export const DEFAULT_TEXT: INode = {
   fillGradient: undefined,
   stroke: undefined,
   strokeWidth: undefined,
+  shadow: undefined,
   text: {
     type: "literal",
-    value: ""
+    value: "type here..."
   },
   fontSize: 16,
   fontFamily: "Arial",
-  fontWeight: undefined,
-  fontStyle: undefined,
+  fontWeight: 400,
+  fontStyle: "normal",
   align: undefined,
   verticalAlign: undefined,
   lineHeight: undefined,

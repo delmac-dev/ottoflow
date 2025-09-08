@@ -2,6 +2,7 @@ import { ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { INode, KonvaMouseEvent } from "./types";
 import Konva from "konva";
+import { refine } from "zod";
 
 /**
  * COMBINES AND MERGES CSS CLASS NAMES WITH PROPER CONFLICT RESOLUTION.
@@ -104,28 +105,33 @@ export const getDropTarget = (e: KonvaMouseEvent) => {
   let group;
   let parentId;
   let relativePos;
+  let isPage = true;
 
   if (e.evt.shiftKey) {
     // find the group (parent node) id
-    group = e.target.findAncestor("Group"); // Konva Group
+    group = e.target.findAncestor(".root-child"); // Konva Group
     if (!group) {
-      console.log("No group found");
       return null;
     }
     parentId = group.id();
-    relativePos = group.getRelativePointerPosition();
+    const referenceGroup = e.target.findAncestor(".component");
+    relativePos = referenceGroup.getRelativePointerPosition();
+    isPage = false;
   } else {
     // find the first group with name "background"
     group = stage.findOne((node: Konva.Group) => node.getType() === "Group" && node.name() === "page");
     if (!group) {
-      console.log("No background group found");
       return null;
     }
     parentId = group.id();
     relativePos = group.getRelativePointerPosition();
+    isPage = true;
   }
 
   if (!relativePos) return null;
 
-  return { parentId, relativePos };
+  return { parentId, relativePos, isPage };
 };
+
+export const round = (num: number, decimals = 2) =>
+  Math.round(num * Math.pow(10, decimals)) / Math.pow(10, decimals);

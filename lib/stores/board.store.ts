@@ -85,7 +85,7 @@ export const boardStore = createStore<IBoardStore>()(subscribeWithSelector(
     set((state) => ({
       selectedNodes: state.selectedNodes.includes(id)
         ? state.selectedNodes.filter((nid) => nid !== id) // remove if exists
-        : [...state.selectedNodes, id], // add if not
+        : [id], // add if not
     })),
     setWidth: (width: number) => set({ width }),
     setHeight: (height: number) => set({ height }),

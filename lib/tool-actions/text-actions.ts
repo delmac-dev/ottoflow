@@ -1,8 +1,28 @@
+import { v4 as uuidv4 } from "uuid";
+import { DEFAULT_TEXT } from "../constant";
 import { boardStore } from "../stores/board.store";
-import { BoardMode, KonvaMouseEvent } from "../types";
+import { BoardMode, INode, KonvaMouseEvent } from "../types";
+import { getDropTarget } from "../utils";
 
 export const click = (e: KonvaMouseEvent) => {
-  console.log("Create text at", e.target.getStage()?.getPointerPosition());
+  const { addNode } = boardStore.getState();
+  
+    const result = getDropTarget(e);
+    if (!result) return;
+  
+    const { parentId, relativePos, isPage } = result;
+  
+    // new text node
+    const newNode: INode = {
+      ...DEFAULT_TEXT,
+      id: uuidv4(),
+      name: `${DEFAULT_TEXT.name} ${!isPage ? "frame-element" : ""}`,
+      x: relativePos.x,
+      y: relativePos.y,
+    };
+  
+    // add it to the tree
+    addNode(parentId, newNode);
 };
 
 export const mouseDown = (e: KonvaMouseEvent) => {

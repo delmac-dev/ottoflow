@@ -1,6 +1,7 @@
 import Konva from "konva";
 import { boardStore } from "../stores/board.store";
 import { Action, BoardMode, KonvaMouseEvent } from "../types";
+import { round } from "../utils";
 
 export const handleDragEnd = (e: KonvaMouseEvent) => {
   const id = e.target.id();
@@ -8,8 +9,8 @@ export const handleDragEnd = (e: KonvaMouseEvent) => {
   
   updateRoot(id, (node) => ({
     ...node,
-    x: e.target.x(),
-    y: e.target.y()
+    x: round(e.target.x()),
+    y: round(e.target.y())
   }));
 };
 
@@ -30,9 +31,9 @@ export const handleTransformEnd = (e: KonvaMouseEvent) => {
       const scale = (scaleX + scaleY) / 2;
       updateRoot(id, (currentNode) => ({
         ...currentNode,
-        x: node.x(),
-        y: node.y(),
-        radius: Math.max(5, (currentNode.radius ?? node.width() / 2) * scale),
+        x: round(node.x()),
+        y: round(node.y()),
+        radius: round(Math.max(5, (currentNode.radius ?? node.width() / 2) * scale)),
       }));
       break;
     }
@@ -40,10 +41,10 @@ export const handleTransformEnd = (e: KonvaMouseEvent) => {
     case "Ellipse": {
       updateRoot(id, (currentNode) => ({
         ...currentNode,
-        x: node.x(),
-        y: node.y(),
-        radiusX: Math.max(5, (currentNode.radiusX ?? node.width() / 2) * scaleX),
-        radiusY: Math.max(5, (currentNode.radiusY ?? node.height() / 2) * scaleY),
+        x: round(node.x()),
+        y: round(node.y()),
+        radiusX: round(Math.max(5, (currentNode.radiusX ?? node.width() / 2) * scaleX)),
+        radiusY: round(Math.max(5, (currentNode.radiusY ?? node.height() / 2) * scaleY)),
       }));
       break;
     }
@@ -53,8 +54,8 @@ export const handleTransformEnd = (e: KonvaMouseEvent) => {
       const lineNode = node as Konva.Line;
       updateRoot(id, (currentNode) => ({
         ...currentNode,
-        x: lineNode.x(),
-        y: lineNode.y(),
+        x: round(lineNode.x()),
+        y: round(lineNode.y()),
         points: lineNode.points(),
         rotation: lineNode.rotation(),
       }));
@@ -65,11 +66,11 @@ export const handleTransformEnd = (e: KonvaMouseEvent) => {
       // Rect, Image, Text, etc.
       updateRoot(id, (currentNode) => ({
         ...currentNode,
-        x: node.x(),
-        y: node.y(),
-        width: Math.max(5, node.width() * scaleX),
-        height: Math.max(5, node.height() * scaleY),
-        rotation: node.rotation(),
+        x: round(node.x()),
+        y: round(node.y()),
+        width: round(Math.max(5, node.width() * scaleX)),
+        height: round(Math.max(5, node.height() * scaleY)),
+        rotation: round(node.rotation()),
       }));
     }
   }

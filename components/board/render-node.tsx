@@ -5,6 +5,7 @@ import OttoRect from "../board-elements/otto-rect";
 import OttoCircle from "../board-elements/otto-circle";
 import OttoArrow from "../board-elements/otto-arrow";
 import OttoFrame from "../board-elements/otto-frame";
+import OttoText from "../board-elements/otto-text";
 
 type Props = {
   node: INode,
@@ -29,6 +30,7 @@ export default function RenderNode({node, optionalName}:Props) {
     case "Rect": return <OttoRect node={node} optionalName={optionalName} />;
     case "Circle": return <OttoCircle node={node} optionalName={optionalName} />;
     case "Arrow": return <OttoArrow node={node} optionalName={optionalName} />;
+    case "Text": return <OttoText node={node} optionalName={optionalName} />;
     default: return null;
   }
 };
