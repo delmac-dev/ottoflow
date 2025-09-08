@@ -41,7 +41,7 @@ export default function NewProject() {
 
   return (
     <>
-      <Button variant="outline" size='xs' onClick={open}>New Project</Button>
+      <Button variant="outline" color='dark.0' size='compact-sm' onClick={open}>New Project</Button>
 
       <Modal 
         opened={opened} 

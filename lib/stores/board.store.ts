@@ -120,6 +120,12 @@ export const boardStore = createStore<IBoardStore>()(subscribeWithSelector(
       return state.root ? getNodeById(state.root, id) : undefined;
     },
     removeNode: (id: string) => {
+      const isSelected = get().selectedNodes.includes(id);
+      if (isSelected) {
+        set((state) => ({
+          selectedNodes: state.selectedNodes.filter((nid) => nid !== id),
+        }));
+      }
       set(state => ({
         root: state.root ? removeNodeById(state.root, id) : null,
       }));

@@ -1,7 +1,7 @@
 import { boardStore } from '@/lib/stores/board.store';
 import { INode } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { Group, RenderTreeNodePayload, ScrollArea, Stack, Text, Tree, TreeNodeData, useTree } from '@mantine/core'
+import { getTreeExpandedState, Group, RenderTreeNodePayload, ScrollArea, Stack, Text, Tree, TreeNodeData, useTree } from '@mantine/core'
 import { ChevronRight, Trash } from 'lucide-react';
 import React, { useEffect } from 'react';
 import { useStore } from 'zustand';
@@ -31,15 +31,16 @@ function nodeToTree(node: INode): TreeNodeData {
 export default function TreePanel() {
   const root = useStore(boardStore, (s) => s.root);
   const selectedNodes = useStore(boardStore, (s) => s.selectedNodes);
-  const tree = useTree({
-    initialSelectedState: selectedNodes,
-    multiple: true
-  });
-  
+
   const treeData = React.useMemo(
     () => root?.children?.map(nodeToTree) || [],
     [root]
   );
+  const tree = useTree({
+    initialSelectedState: selectedNodes,
+    initialExpandedState: getTreeExpandedState(treeData, '*')
+  });
+  
 
   useEffect(() => {
     tree.setSelectedState(selectedNodes);
@@ -77,14 +78,16 @@ const Branch = (props: RenderTreeNodePayload) => {
     >
       <button 
         className={cn(
-          'h-full w-4 hover:bg-dark-500/70 cursor-pointer hidden items-center justify-center', 
-          {'group-hover:flex': hasChildren},
-          {'block': expanded}
+          'h-full w-4 hover:bg-dark-500/70 cursor-pointer flex items-center justify-center'
         )}
+        disabled={!hasChildren}
         onClick={() => tree.toggleExpanded(node.value)}
       >
-        <ChevronRight 
-          className={cn("size-3.5 transition-transform text-dark-300", { "rotate-90": expanded })} 
+        <ChevronRight
+          className={cn(
+            "size-3.5 transition-transform text-dark-300", 
+            {"hidden": !hasChildren}, 
+            { "rotate-90": expanded })}
         />
       </button>
       <button

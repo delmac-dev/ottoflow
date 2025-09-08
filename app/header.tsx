@@ -13,9 +13,9 @@ export default function Header() {
 
   return (
     <AppShell.Header>
-      <Group h="100%" px="md" justify='space-between'>
+      <Group h="100%" px="md" justify='space-between' className='relative'>
         <Title order={6} className='text-sm'>Ottoflow</Title>
-        <Group>
+        <Group className='absolute left-1/2 -translate-x-1/2'>
           <ProjectSelector disabled={!session} />
           {status === "authenticated" && (
             <>

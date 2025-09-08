@@ -125,7 +125,7 @@ export default function ProfileButton({ user }: Props) {
           label: "text-sm font-medium text-dark-100"
         }}
         leftSection={
-          <Avatar size={28} src={`/avatars/${profileDetail?.avatar || user?.image}.jpg`} alt="user avatar" />
+          <Avatar size={26} src={`/avatars/${profileDetail?.avatar || user?.image}.jpg`} alt="user avatar" />
         }
         rightSection={
           <ChevronDown size={14} className='text-dark-100' />
