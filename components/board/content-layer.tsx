@@ -8,12 +8,11 @@ import { useDebouncedValue } from '@mantine/hooks';
 import { useSaveBoardRoot } from '@/lib/query.hooks';
 
 export default function ContentLayer() {
-  const pageRef = React.useRef<Konva.Group>(null);
+  const layerRef = React.useRef<Konva.Layer>(null);
   const hasMounted = React.useRef(false);
   const root = useStore(boardStore, (s) => s.root);
   const [debouncedRoot] = useDebouncedValue(root, 5000);
   const BoardID = useStore(boardStore, (s) => s.boardID);
-  const isSaving = useStore(boardStore, (s) => s.isSaving);
   const setIsSaving = useStore(boardStore, (s) => s.setIsSaving);
   const { mutate, isPending } = useSaveBoardRoot();
   const selectedNodes = useStore(boardStore, (s) => s.selectedNodes);
@@ -23,11 +22,15 @@ export default function ContentLayer() {
     const unsub = boardStore.subscribe(
       (state) => state.shouldDownload,
       (val) => {
-        if (val && pageRef.current) {
-          const dataUrl = pageRef.current.toDataURL();
+        if (val && layerRef.current) {
+          const stage = layerRef.current.getStage();
+          if (!stage) return;
+          const group = stage.findOne('.page');
+          if (!group) return;
+          const dataUrl = group.toDataURL();
           const link = document.createElement("a");
           link.href = dataUrl;
-          link.download = `dl.png`;
+          link.download = `design.png`;
           link.click();
           boardStore.getState().clearDownload();
         }
@@ -73,7 +76,7 @@ export default function ContentLayer() {
   }, [isPending, setIsSaving]);
 
   return (
-    <Layer name='content-layer'>
+    <Layer ref={layerRef} name='content-layer'>
       {root ? <RenderNode node={root} /> : null}
 
       <Transformer
