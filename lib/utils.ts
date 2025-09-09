@@ -135,3 +135,42 @@ export const getDropTarget = (e: KonvaMouseEvent) => {
 
 export const round = (num: number, decimals = 2) =>
   Math.round(num * Math.pow(10, decimals)) / Math.pow(10, decimals);
+
+export function computeLayout(
+  container: INode,
+  object: INode,
+  cols: number, // 0 => flex-row, 1 => flex-col, >1 => grid
+  count: number,
+  gapX: number = 0,
+  gapY: number = 0,
+  padding: number = 0
+) {
+  const { width: cw = 0, height: ch = 0 } = container;
+  const { width: ow = 0, height: oh = 0 } = object;
+
+  const children: { x: number; y: number; width: number; height: number }[] = [];
+
+  // normalize cols
+  let effectiveCols = cols === 0 ? count : cols;
+  const rows = Math.ceil(count / effectiveCols);
+
+  for (let i = 0; i < count; i++) {
+    const col = i % effectiveCols;
+    const row = Math.floor(i / effectiveCols);
+
+    children.push({
+      x: padding + col * (ow + gapX), // relative to container
+      y: padding + row * (oh + gapY), // relative to container
+      width: ow,
+      height: oh,
+    });
+  }
+
+  return {
+    x: container.x, // keep container position for global
+    y: container.y,
+    width: padding * 2 + effectiveCols * ow + (effectiveCols - 1) * gapX,
+    height: padding * 2 + rows * oh + (rows - 1) * gapY,
+    children,
+  };
+}

@@ -88,7 +88,7 @@ export default function ContentLayer() {
 
       <Transformer
         ref={transformerRef}
-        rotationSnaps={[0, 90, 180, 270]}
+        rotationSnaps={[0, 45, 90, 135, 180, 225, 270]}
         rotationSnapTolerance={30}
         boundBoxFunc={(oldBox, newBox) => {
           // Limit resize

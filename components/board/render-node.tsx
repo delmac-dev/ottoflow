@@ -4,14 +4,17 @@ import OttoPage from "../board-elements/otto-page";
 import OttoRect from "../board-elements/otto-rect";
 import OttoCircle from "../board-elements/otto-circle";
 import OttoArrow from "../board-elements/otto-arrow";
-import OttoFrame from "../board-elements/otto-frame";
 import OttoText from "../board-elements/otto-text";
+import FrameRenderer from "./frame-renderer";
 
 type Props = {
   node: INode,
   optionalName?: string
+  index?: number,
+  isClone?: boolean,
 }
-export default function RenderNode({node, optionalName}:Props) {
+export default function RenderNode({node, optionalName, index, isClone}:Props) {
+
   switch (node.type) {
     case "Page": return (
       <OttoPage node={node}>
@@ -20,17 +23,11 @@ export default function RenderNode({node, optionalName}:Props) {
         )}
       </OttoPage>
     );
-    case "Frame": return (
-      <OttoFrame node={node} optionalName={optionalName}>
-        {node.children?.map( (childNode) => 
-          <RenderNode key={childNode.id} node={childNode} optionalName={"frame-child"} />
-        )}
-      </OttoFrame>
-    );
-    case "Rect": return <OttoRect node={node} optionalName={optionalName} />;
-    case "Circle": return <OttoCircle node={node} optionalName={optionalName} />;
-    case "Arrow": return <OttoArrow node={node} optionalName={optionalName} />;
-    case "Text": return <OttoText node={node} optionalName={optionalName} />;
+    case "Frame": return <FrameRenderer node={node} optionalName={optionalName} />;
+    case "Rect": return <OttoRect node={node} optionalName={optionalName} isClone={isClone} />;
+    case "Circle": return <OttoCircle node={node} optionalName={optionalName} isClone={isClone} />;
+    case "Arrow": return <OttoArrow node={node} optionalName={optionalName} isClone={isClone} />;
+    case "Text": return <OttoText node={node} optionalName={optionalName} index={index} isClone={isClone} />;
     default: return null;
   }
 };

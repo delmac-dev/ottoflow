@@ -6,9 +6,10 @@ import { Arrow } from 'react-konva'
 type Props = {
   node: INode,
   optionalName?: string
+  isClone?: boolean,
 }
 
-const OttoArrow = ({ node, optionalName }: Props) => {
+const OttoArrow = ({ node, optionalName, isClone=false }: Props) => {
   return (
     <Arrow
       id={node.id}
@@ -33,8 +34,8 @@ const OttoArrow = ({ node, optionalName }: Props) => {
       shadowOffsetY={node.shadow?.y}
       shadowOpacity={node.shadow?.opacity}
 
-      draggable
-      
+      draggable={!isClone}
+
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
       onTransformEnd={handleTransformEnd}

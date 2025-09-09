@@ -9,9 +9,10 @@ type Props = {
   node: INode,
   optionalName?: string,
   index?: number
+  isClone?: boolean,
 }
 
-const OttoText = ({ node, optionalName, index=0 }: Props) => {
+const OttoText = ({ node, optionalName, index=0, isClone=false }: Props) => {
   const data = useStore(scheduleStore, (s) => s.data);
   const finalText = node.text?.type === "literal"? node.text.value : data[index][node.text?.key || ""];
 
@@ -53,7 +54,7 @@ const OttoText = ({ node, optionalName, index=0 }: Props) => {
       textDecoration={node.decoration}
       
 
-      draggable
+      draggable={!isClone}
 
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}

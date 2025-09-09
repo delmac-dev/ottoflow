@@ -72,7 +72,12 @@ export interface INode {
   name: string;
   type: "Page" | "Rect" | "Circle" | "Ellipse" | "Line" | "Arrow" | "Pen" | "Polygon" | "Star" | "Ring" | "Text" | "Frame" | "Image" | "Component";
 
-  // Base props
+  layout?: number
+  padding?: number
+  gapX?: number
+  gapY?: number
+  
+  // Base props 
   x?: number;
   y?: number;
   width?: number;

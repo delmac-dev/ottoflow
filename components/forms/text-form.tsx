@@ -19,8 +19,7 @@ const textTypes: SegmentedControlItem[] = [
 
 const supportedFonts = ["Arial"];
 const fontStyles = [ "normal", "bold", "italic"];
-const fontWeights = ["400", "600", "700", "800", "900"];
-const fontSizes = ["16", "18", "20", "24", "28", "32", "36", "40", "44", "48", "56", "64"];
+const fontSizes = ["8", "10", "12", "14", "16", "18", "20", "24", "28", "32", "36", "40", "44", "48", "56", "64"];
 const decorations = ["underline", "line-through", "none"];
 
 export default function TextForm({ node }: { node: INode }) {

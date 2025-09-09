@@ -6,9 +6,10 @@ import { Rect } from 'react-konva';
 type Props = {
   node: INode,
   optionalName?: string
+  isClone?: boolean,
 }
 
-const OttoRect = ({ node, optionalName }: Props) => {
+const OttoRect = ({ node, optionalName, isClone=false }: Props) => {
 
   return (
     <Rect
@@ -36,7 +37,7 @@ const OttoRect = ({ node, optionalName }: Props) => {
 
       cornerRadius={node.cornerRadius}
 
-      draggable
+      draggable={!isClone}
 
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}

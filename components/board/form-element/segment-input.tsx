@@ -8,10 +8,11 @@ type Props<T extends FieldValues> = {
   control: Control<T>;
   data: SegmentedControlItem[];
   readOnly?: boolean;
+  type?: "string" | "number";
 }
 
 export default function SegmentInput<T extends FieldValues>(props: Props<T>) {
-  const { name, control, data, readOnly } = props;
+  const { name, control, data, readOnly, type="string" } = props;
   const { field } = useController({ name, control });
 
   return (
@@ -20,8 +21,8 @@ export default function SegmentInput<T extends FieldValues>(props: Props<T>) {
           w="100%"
           size="xs"
           readOnly={readOnly}
-          value={field.value}
-          onChange={field.onChange}
+          value={ String(field.value) }
+          onChange={(val) => field.onChange( type === "number" ? Number(val) : val )}
           transitionDuration={0}
           data={data}
         />

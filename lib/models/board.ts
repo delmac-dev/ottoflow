@@ -24,6 +24,10 @@ const NodeSchema = new Schema<INode>({
     enum: ["Page", "Rect", "Circle", "Ellipse", "Line", "Arrow", "Pen", "Polygon", "Star", "Ring", "Text", "Frame", "Image", "Component"],
     required: true,
   },
+  layout: { type: Number, default: 0 },
+  padding: { type: Number, default: 0 },
+  gapX: { type: Number, default: 0 },
+  gapY: { type: Number, default: 0 },
 
   // Base
   x: Number,

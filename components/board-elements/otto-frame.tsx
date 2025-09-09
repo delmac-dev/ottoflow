@@ -10,8 +10,6 @@ type Props = {
 }
 
 const OttoFrame = ({ node, optionalName, children }: Props) => {
-  const { component } = node;
-
   return (
     <Group
       id={node.id}
@@ -54,43 +52,7 @@ const OttoFrame = ({ node, optionalName, children }: Props) => {
 
         cornerRadius={node.cornerRadius}
       />
-      <Group
-        id={component?.id}
-        name={component?.name}
-        nodeType={component?.type}
-        x={component?.x || 0}
-        y={component?.y || 0}
-        width={component?.width}
-        height={component?.height}
-        
-        visible={component?.visible}
-        rotation={component?.rotation}
-        opacity={component?.opacity}
-      >
-        <Rect
-          id={`rect-${component?.id}`}
-          name={"component-background"}
-          nodeType={"Background"}
-
-          x={0}
-          y={0}
-          width={component?.width}
-          height={component?.height}
-          fill={component?.fill}
-
-          shadowColor={component?.shadow?.color}
-          shadowBlur={component?.shadow?.blur}
-          shadowOffsetX={component?.shadow?.x}
-          shadowOffsetY={component?.shadow?.y}
-          shadowOpacity={component?.shadow?.opacity}
-
-          stroke={component?.stroke}
-          strokeWidth={component?.strokeWidth}
-
-          cornerRadius={component?.cornerRadius}
-        />
-        {children}
-      </Group>
+      {children}
     </Group>
   )
 }

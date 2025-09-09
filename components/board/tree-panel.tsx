@@ -78,7 +78,8 @@ const Branch = (props: RenderTreeNodePayload) => {
     >
       <button 
         className={cn(
-          'h-full w-4 hover:bg-dark-500/70 cursor-pointer flex items-center justify-center'
+          'h-full w-4 cursor-pointer flex items-center justify-center',
+          {'hover:bg-dark-500/70': hasChildren}
         )}
         disabled={!hasChildren}
         onClick={() => tree.toggleExpanded(node.value)}

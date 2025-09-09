@@ -6,9 +6,10 @@ import { Circle } from 'react-konva';
 type Props = {
   node: INode,
   optionalName?: string
+  isClone?: boolean,
 }
 
-const OttoCircle = ({ node, optionalName }: Props) => {
+const OttoCircle = ({ node, optionalName, isClone=false }: Props) => {
   return (
     <Circle
       id={node.id}
@@ -30,8 +31,8 @@ const OttoCircle = ({ node, optionalName }: Props) => {
       shadowOffsetY={node.shadow?.y}
       shadowOpacity={node.shadow?.opacity}
 
-      draggable
-      
+      draggable={!isClone}
+
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
       onTransformEnd={handleTransformEnd}

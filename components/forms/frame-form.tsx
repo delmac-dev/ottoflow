@@ -6,7 +6,16 @@ import { useStore } from 'zustand';
 import Wrapper from './wrapper';
 import DefaultInput from '../board/form-element/default-input';
 import ColorInput from '../board/form-element/color-input';
-import { Blend, Droplet, Scan, SquareDashedTopSolid } from 'lucide-react';
+import { Blend, Columns2, Droplet, FoldHorizontal, FoldVertical, Grid2x2, Grid3x3, Ratio, Rows2, Scan, SquareDashedTopSolid} from 'lucide-react';
+import SegmentInput from '../board/form-element/segment-input';
+import { Center, SegmentedControlItem } from '@mantine/core';
+
+const layouts:SegmentedControlItem[] = [
+  { label: <Center><Columns2 size={16} /></Center>, value: "0" },
+  { label: <Center><Rows2 size={16} /></Center>, value: "1" },
+  { label: <Center><Grid2x2 size={16} /></Center>, value: "2" },
+  { label: <Center><Grid3x3 size={16} /></Center>, value: "4" },
+]
 
 export default function FrameForm({ node }: { node: INode }) {
   const updateRoot = useStore(boardStore, (s) => s.updateRoot);
@@ -15,6 +24,11 @@ export default function FrameForm({ node }: { node: INode }) {
     x: n.x,
     y: n.y,
     rotation: n.rotation,
+
+    layout: n.layout,
+    padding: n.padding,
+    gapX: n.gapX,
+    gapY: n.gapY,
 
     width: n.width,
     height: n.height,
@@ -70,8 +84,12 @@ export default function FrameForm({ node }: { node: INode }) {
         <DefaultInput name="y" control={control} label="Y" type="number" />
       </Wrapper>
       <Wrapper label="Layout">
-        <DefaultInput name="width" control={control} label="W" type="number" />
-        <DefaultInput name="height" control={control} label="H" type="number" />
+        <SegmentInput name='layout' control={control} data={layouts} type="number" />
+        <DefaultInput name="width" control={control} label="W" type="number" disabled />
+        <DefaultInput name="height" control={control} label="H" type="number" disabled />
+        <DefaultInput name="padding" control={control} icon={Ratio} type="number" disabled />
+        <DefaultInput name="gapX" control={control} icon={FoldHorizontal} type="number" disabled />
+        <DefaultInput name="gapY" control={control} icon={FoldVertical} type="number" disabled />
       </Wrapper>
       <Wrapper label="Appearance">
         <DefaultInput name="opacity" control={control} icon={Blend} type="number" />
