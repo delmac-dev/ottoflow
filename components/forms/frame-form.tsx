@@ -87,9 +87,9 @@ export default function FrameForm({ node }: { node: INode }) {
         <SegmentInput name='layout' control={control} data={layouts} type="number" />
         <DefaultInput name="width" control={control} label="W" type="number" disabled />
         <DefaultInput name="height" control={control} label="H" type="number" disabled />
-        <DefaultInput name="padding" control={control} icon={Ratio} type="number" disabled />
-        <DefaultInput name="gapX" control={control} icon={FoldHorizontal} type="number" disabled />
-        <DefaultInput name="gapY" control={control} icon={FoldVertical} type="number" disabled />
+        <DefaultInput name="padding" control={control} icon={Ratio} type="number" />
+        <DefaultInput name="gapX" control={control} icon={FoldHorizontal} type="number" />
+        <DefaultInput name="gapY" control={control} icon={FoldVertical} type="number" />
       </Wrapper>
       <Wrapper label="Appearance">
         <DefaultInput name="opacity" control={control} icon={Blend} type="number" />
