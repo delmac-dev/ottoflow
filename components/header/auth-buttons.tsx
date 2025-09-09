@@ -3,7 +3,7 @@
 import { ZSignIn, ZSignUp } from '@/lib/schema';
 import { ISignIn, ISignUp } from '@/lib/types';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Anchor, Box, Button, Center, Group, Loader, Modal, PasswordInput, Stack, Text, TextInput, Title } from '@mantine/core'
+import { Anchor, Box, Button, Center, Group, Image, Loader, Modal, PasswordInput, Stack, Text, TextInput, Title } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks';
 import { useMutation } from '@tanstack/react-query';
 import { signIn } from 'next-auth/react';
@@ -182,7 +182,7 @@ export default function AuthButtons() {
                 </Group>
               </Stack>
               <Center flex={1} bg={"dark.8"} h={"100%"}>
-                <Text size='sm'>[ Image goes here... ]</Text>
+                <Image h="100%" src="/common/bg.png" className='object-left'/>
               </Center>
             </Group>
           </Modal.Body>
