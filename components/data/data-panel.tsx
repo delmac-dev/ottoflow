@@ -6,6 +6,7 @@ import IconButton from './icon-button';
 import { useStore } from 'zustand';
 import { scheduleStore } from '@/lib/stores/schedule.store';
 import { Control, useController, useFieldArray, useForm } from 'react-hook-form';
+import startCase from 'lodash.startcase';
 
 type IControl = Control<{
   data: Record<string, string>[];
@@ -18,7 +19,7 @@ export default function DataPanel() {
   const data = useStore(scheduleStore, (s) => s.data);
   const setData = useStore(scheduleStore, (s) => s.setData);
 
-  const { handleSubmit, reset, control, register, formState: { isDirty } } = useForm({
+  const { handleSubmit, reset, control, formState: { isDirty } } = useForm({
     defaultValues: {
       data: data || []
     }
@@ -34,7 +35,7 @@ export default function DataPanel() {
       handleSubmit((data) => {
         setData(data.data);
       })();
-    };
+    }
   }, [isDirty]);
 
   useEffect(() => {
@@ -48,7 +49,7 @@ export default function DataPanel() {
       disabled: properties.length === 0,
       action: () => append(
         properties.reduce((acc, prop) => {
-          acc[prop.key] = "";
+          acc[snakeCase(prop.key)] = "";
           return acc;
         }, {} as Record<string, string>)
       )
@@ -121,7 +122,7 @@ type IRowForm = {
 
 const RowForm = (props: IRowForm) => {
   const { position, key2, type, i, control } = props;
-  const valueControl = useController({name: `data.${i}.${key2}`, control});
+  const valueControl = useController({name: `data.${i}.${snakeCase(key2)}`, control});
   const [value, setValue] = React.useState(valueControl.field.value);
 
   return (
@@ -134,7 +135,7 @@ const RowForm = (props: IRowForm) => {
       </Group>
       <Group className='h-full'>
         <Text className='text-blue-500 text-sm font-semibold capitalize text-nowrap'>
-          {key2} {" :"}
+          {startCase(key2)} {" :"}
         </Text>
       </Group>
       <Group className='flex-1 h-full overflow-x-hidden p-0'>

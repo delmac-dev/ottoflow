@@ -26,8 +26,15 @@ export default function ContentLayer() {
           const stage = layerRef.current.getStage();
           if (!stage) return;
           const group = stage.findOne('.page');
+          const bg = stage.findOne('.background')?.getClientRect();
           if (!group) return;
-          const dataUrl = group.toDataURL();
+          
+          const dataUrl = group.toDataURL({
+            x: bg?.x || 0,
+            y: bg?.y || 0,
+            width: bg?.width || 0,
+            height: bg?.height || 0
+          });
           const link = document.createElement("a");
           link.href = dataUrl;
           link.download = `design.png`;

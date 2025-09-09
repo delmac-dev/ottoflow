@@ -9,6 +9,7 @@ import Board from "./models/board";
 import Project from "./models/project";
 import bcrypt from "bcrypt";
 import { DEFAULT_PAGE } from "./constant";
+import { _baseUrl } from "./utils";
 
 /**
  * RETRIEVES A PROFILE FROM THE DATABASE BY THEIR EMAIL ADDRESS.
@@ -145,7 +146,7 @@ export const deleteProfile = async () => {
  * @throws Error if the AI request fails or returns an error.
  */
 export const aiChat = async (data: { prompt?: string, url?: string, projectID: string }) => {
-  const res = await fetch("/api/ai", {
+  const res = await fetch(_baseUrl() + "/api/ai", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -184,8 +185,6 @@ export const getWorkspaceContext = async (projectId: string) => {
       name: board?.name || "",
     },
   };
-
-  console.log("Workspace context data:", data);
 
   return data;
 };

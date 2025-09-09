@@ -5,6 +5,7 @@ import IconButton from './icon-button';
 import { Control, FieldArrayWithId, useController, useFieldArray, UseFieldArrayRemove, useForm, UseFormRegister } from 'react-hook-form';
 import { useStore } from 'zustand';
 import { scheduleStore } from '@/lib/stores/schedule.store';
+import snakeCase from 'lodash.snakecase';
 
 type IControl = Control<{
   schema: {
@@ -38,7 +39,7 @@ export default function SchemaPanel() {
     if (isDirty) {
       handleSubmit((data) => {
         // collect allowed keys from schema
-        const allowedKeys = new Set(data.schema.map((f) => f.key));
+        const allowedKeys = new Set(data.schema.map((f) => snakeCase(f.key)));
 
         const storeData = scheduleStore.getState().data;
         const cleaned = storeData
@@ -48,7 +49,6 @@ export default function SchemaPanel() {
             )
           )
           : [];
-
         setData(cleaned);
         setProperties(data.schema);
       })();

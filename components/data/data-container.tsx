@@ -1,4 +1,4 @@
-import { AppShell, Tabs, Text } from '@mantine/core'
+import { AppShell, Center, Loader, Tabs, Text } from '@mantine/core'
 import React, { useEffect, useState } from 'react'
 import AIArea from './ai-area'
 import DataPanel from './data-panel'
@@ -20,6 +20,7 @@ export default function DataContainer() {
   const mountedProperties = React.useRef(false);
   const projectID = useStore(appStore, (s) => s.projectID);
   const data = useStore(scheduleStore, (s) => s.data);
+  const aiPending = useStore(scheduleStore, (s) => s.isAiPending);
   const setIsDataSaving = useStore(scheduleStore, (s) => s.setIsDataSaving);
   const setIsPropertiesSaving = useStore(scheduleStore, (s) => s.setIsPropertiesSaving);
   const [debouncedData] = useDebouncedValue(data, 5000);
@@ -36,10 +37,10 @@ export default function DataContainer() {
       mountedData.current = true;
       return;
     }
-    if( !projectID ) return;
+    if (!projectID) return;
     mutateData({ data: debouncedData, projectID: projectID });
   }, [debouncedData]);
-  
+
   useEffect(() => {
     if (!debouncedProperties) return;
 
@@ -48,7 +49,7 @@ export default function DataContainer() {
       mountedProperties.current = true;
       return;
     }
-    if( !projectID ) return;
+    if (!projectID) return;
     mutateProperties({ properties: debouncedProperties, projectID: projectID });
   }, [debouncedProperties]);
 
@@ -87,7 +88,14 @@ export default function DataContainer() {
             value={item.tab}
             className='h-[calc(100%-32px)]'
           >
-            <item.content />
+            {aiPending ? (
+              <Center h="100%" className='justify-center flex-col gap-2' >
+                <Loader color='dark.3' size={"xs"} />
+                <Text className='text-xs font-semibold text-dark-200'>Getting response from AI...</Text>
+              </Center>
+            ) : (
+              <item.content />
+            )}
           </Tabs.Panel>
         ))}
       </Tabs>

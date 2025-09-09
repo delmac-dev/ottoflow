@@ -4,15 +4,18 @@ import { IAIArea } from '@/lib/types';
 import { ActionIcon, AppShell, Center, Group, Loader, Stack, Text, Tooltip } from '@mantine/core'
 import { Paperclip, SendHorizontal, X } from 'lucide-react'
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useCallback, useRef } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 import { useController, useForm } from "react-hook-form";
 import { useDropzone } from 'react-dropzone'
 import { cn } from '@/lib/utils';
 import { useEdgeStore } from '@/lib/edgestore';
 import { appStore } from '@/lib/stores/app.store';
+import { useStore } from 'zustand';
+import { scheduleStore } from '@/lib/stores/schedule.store';
 
 export default function AIArea() {
-  const { mutate } = useAIChat();
+  const { mutate, isPending, data, isSuccess } = useAIChat();
+  const setAiPending = useStore(scheduleStore, (s) => s.setAiPending);
   const { edgestore } = useEdgeStore();
 
   const form = useForm<IAIArea>({
@@ -22,9 +25,9 @@ export default function AIArea() {
     },
     resolver: zodResolver(ZAIArea)
   });
-  
+
   const { handleSubmit, register, watch, control } = form;
-  const { field } = useController({control, name: "file"});
+  const { field } = useController({ control, name: "file" });
   const file = watch("file");
 
   const onDrop = useCallback(async (files: File[]) => {
@@ -42,13 +45,13 @@ export default function AIArea() {
         options: {
           temporary: true,
         },
-        onProgressChange: (progress) => {},
+        onProgressChange: (progress) => { },
       });
 
-      if(!res) {
+      if (!res) {
         field.onChange(null);
       }
-      
+
       field.onChange({
         name: file.name,
         uploaded: true,
@@ -61,7 +64,7 @@ export default function AIArea() {
     }
   }, []);
 
-  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({ 
+  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     onDrop,
     noClick: true,
     accept: {
@@ -72,18 +75,26 @@ export default function AIArea() {
 
   const onSubmit = (data: IAIArea) => {
     const projectID = appStore.getState().projectID;
-    if(!projectID) return;
-    console.log({
+    if (!projectID) return;
+    mutate({
       prompt: data.prompt,
       url: file?.url || "",
       projectID
     });
-    // mutate({
-    //   prompt: data.prompt,
-    //   url: file?.url || "",
-    //   projectID
-    // });
   }
+
+  useEffect(() => {
+    setAiPending(isPending);
+  }, [isPending]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      form.reset({
+        prompt: "",
+        file: null
+      }, { keepDirty: false });
+    }
+  }, [isSuccess]);
 
   return (
     <AppShell.Section mih={100} p={4} {...getRootProps()}>
@@ -117,13 +128,13 @@ export default function AIArea() {
               {file && (
                 <>
                   <Text truncate className='flex-1 max-w-40 text-xs font-semibold text-dark-200'>{file.name}</Text>
-                  {!file.uploaded? (<Loader color='dark.2' size={12} className='mx-1' />) : (
-                    <ActionIcon 
-                      color='dark.2' 
-                      variant='subtle' 
-                      size={20} 
-                      radius={'lg'} 
-                      onClick={()=> field.onChange(null)}
+                  {!file.uploaded ? (<Loader color='dark.2' size={12} className='mx-1' />) : (
+                    <ActionIcon
+                      color='dark.2'
+                      variant='subtle'
+                      size={20}
+                      radius={'lg'}
+                      onClick={() => field.onChange(null)}
                     >
                       <X className='size-3.5' />
                     </ActionIcon>
@@ -137,6 +148,7 @@ export default function AIArea() {
               action={() => { }}
               disabled={!!file && !file.uploaded}
               isSubmit={true}
+              isLoading={isPending}
             />
           </Group>
           {isDragActive && (
@@ -156,6 +168,7 @@ type ToolButtonProps = {
   action: () => void;
   disabled: boolean;
   isSubmit: boolean;
+  isLoading?: boolean;
 }
 
 const ToolButton = (props: ToolButtonProps) => {
@@ -172,6 +185,7 @@ const ToolButton = (props: ToolButtonProps) => {
       <ActionIcon
         onClick={props.action}
         disabled={props.disabled}
+        loading={props.isLoading || false}
         type={props.isSubmit ? 'submit' : 'button'}
         variant='subtle'
         color='dark.2'
