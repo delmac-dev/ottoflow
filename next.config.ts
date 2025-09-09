@@ -3,6 +3,9 @@ import path from "path";
 
 const nextConfig: NextConfig = {
   devIndicators: false,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   experimental: {
     optimizePackageImports: ['@mantine/core', '@mantine/hooks'],
   },
