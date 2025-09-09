@@ -53,7 +53,7 @@ export interface IProject extends Document {
   name: string;
   owner_id: Types.ObjectId;
   data: Record<string, string>[]; 
-  properties: { type: "text" | "boolean"; key: string }[];
+  properties: { type: string; key: string }[];
   createdAt: Date;
   updatedAt: Date;
 }

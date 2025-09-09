@@ -21,7 +21,7 @@ const tools = {
     execute: async ({ schedules, properties }) => {
       // Store or process schedules
       return { 
-        success: true, 
+        success: true,
         message: 'Schedule data extracted and generated successfully',
         schedules, 
         properties 
@@ -54,8 +54,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "projectID is required" }, { status: 400 });
     }
 
-    if (!fileUrl || !prompt) {
-      return NextResponse.json({ error: "fileUrl and prompt are required" }, { status: 400 });
+    if (!fileUrl && !prompt) {
+      return NextResponse.json({ error: "either fileUrl or prompt are required" }, { status: 400 });
     }
 
     await connect();

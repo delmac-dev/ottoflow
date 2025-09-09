@@ -9,6 +9,7 @@ import { useController, useForm } from "react-hook-form";
 import { useDropzone } from 'react-dropzone'
 import { cn } from '@/lib/utils';
 import { useEdgeStore } from '@/lib/edgestore';
+import { appStore } from '@/lib/stores/app.store';
 
 export default function AIArea() {
   const { mutate } = useAIChat();
@@ -70,15 +71,28 @@ export default function AIArea() {
   });
 
   const onSubmit = (data: IAIArea) => {
-    console.log(data);
-    mutate(data);
+    const projectID = appStore.getState().projectID;
+    if(!projectID) return;
+    console.log({
+      prompt: data.prompt,
+      url: file?.url || "",
+      projectID
+    });
+    // mutate({
+    //   prompt: data.prompt,
+    //   url: file?.url || "",
+    //   projectID
+    // });
   }
 
   return (
     <AppShell.Section mih={100} p={4} {...getRootProps()}>
       <form className='h-full' onSubmit={handleSubmit(onSubmit)}>
-        <Stack className='relative gap-1 h-full rounded-sm border border-dark-400'>
+        <Stack className='relative gap-2 h-full rounded-sm border border-dark-400'>
           <Group flex="1">
+
+          </Group>
+          <Group>
             <input
               {...register("prompt")}
               className='w-full px-2 text-sm font-normal text-dark-100 placeholder:text-dark-100 focus:outline-none'
@@ -87,7 +101,7 @@ export default function AIArea() {
             <input {...getInputProps()} />
           </Group>
           <Group className='h-9 justify-between px-1.5'>
-            <Group 
+            <Group
               className={cn(
                 'gap-2 rounded-sm mx-1 px-0',
                 file && 'border border-dark-400'

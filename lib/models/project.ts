@@ -6,11 +6,13 @@ const ProjectSchema = new Schema<IProject>({
   owner_id: { type: Schema.Types.ObjectId, ref: "Profile", required: true },
   data: [
     {
+      _id: false,
       type: Schema.Types.Mixed
     },
   ],
   properties: [
     {
+      _id: false,
       type: { type: String, enum: ["text", "boolean"], required: true },
       key: { type: String, required: true },
     },

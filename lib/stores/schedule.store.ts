@@ -6,6 +6,10 @@ interface IScheduleStore {
     type: string,
     key: string,
   }[],
+  isDataSaving: boolean;
+  isPropertiesSaving: boolean;
+  setIsDataSaving: (isSaving: boolean) => void;
+  setIsPropertiesSaving: (isSaving: boolean) => void;
   setData: (data: IScheduleStore["data"]) => void;
   setProperties: (properties: IScheduleStore["properties"]) => void;
 };
@@ -13,6 +17,10 @@ interface IScheduleStore {
 export const scheduleStore = createStore<IScheduleStore>()((set) => ({
   data: [],
   properties: [],
+  isDataSaving: false,
+  isPropertiesSaving: false,
+  setIsDataSaving: (isSaving) => set({ isDataSaving: isSaving }),
+  setIsPropertiesSaving: (isSaving) => set({ isPropertiesSaving: isSaving }),
   setData: (data) => set({ data }),
   setProperties: (properties) => set({ properties }),
 }));

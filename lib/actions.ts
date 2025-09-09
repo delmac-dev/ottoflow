@@ -16,7 +16,7 @@ import { DEFAULT_PAGE } from "./constant";
  * @param email - The email address of the profile to retrieve.
  * @returns A promise that resolves to the profile object formatted as an IProfile instance.
  */
-export async function getProfileByEmail(email: string){
+export async function getProfileByEmail(email: string) {
   await connect();
   const profile = await Profile.findOne({ email }).lean<IProfile & { _id: Types.ObjectId }>();
   if (!profile) return null;
@@ -52,7 +52,7 @@ export async function getProfileByID(id: string) {
  */
 export async function newProfile(email: string, password: string) {
   await connect();
-  
+
   // Check if profile already exists
   const existingProfile = await Profile.findOne({ email }).lean();
   if (existingProfile) {
@@ -86,12 +86,12 @@ export const editProfile = async ({ data }: { data: IProfileDetails; }) => {
   const session = await auth();
   if (!session || !session.user) return { success: false };
 
-  const { email, ...rest} = data;
+  const { email, ...rest } = data;
 
   const updatedProfile = await Profile.findByIdAndUpdate(
     session.user.id,
     { $set: rest },
-    {new: true, runValidators: true, lean: true}
+    { new: true, runValidators: true, lean: true }
   ).lean<IProfile & { _id: Types.ObjectId }>();
 
   if (!updatedProfile) {
@@ -104,14 +104,14 @@ export const editProfile = async ({ data }: { data: IProfileDetails; }) => {
   };
 };
 
-export const changePassword = async ({old, newPassword}:{old: string; newPassword: string;}) => {
+export const changePassword = async ({ old, newPassword }: { old: string; newPassword: string; }) => {
   await connect();
 
   const session = await auth();
   if (!session || !session.user) return { success: false };
 
   const profile = await Profile.findById(session.user.id);
-  if (!profile) return {success: false};
+  if (!profile) return { success: false };
 
   const isMatch = await bcrypt.compare(old, profile.password);
   if (!isMatch) throw new Error("Old password is incorrect");
@@ -144,13 +144,14 @@ export const deleteProfile = async () => {
  * @returns A promise that resolves to the AI response data.
  * @throws Error if the AI request fails or returns an error.
  */
-export const aiChat = async (data: IAIArea) => {
+export const aiChat = async (data: { prompt?: string, url?: string, projectID: string }) => {
   const res = await fetch("/api/ai", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      prompt: data.prompt,
-      fileUrl: data.file?.url || ""
+      prompt: data.prompt || "",
+      fileUrl: data.url || "",
+      projectID: data.projectID
     })
   });
 
@@ -166,157 +167,163 @@ export const aiChat = async (data: IAIArea) => {
 
 export const getWorkspaceContext = async (projectId: string) => {
   await connect();
-  
+
   const project = await Project.findById(projectId).lean<IProject>();
   const board = await Board.findOne({ project_id: projectId }).lean<IBoard & { _id: Types.ObjectId }>();
 
-  return {
-    project : {
+  const data = {
+    project: {
       data: project?.data || [],
-      properties: project?.properties || []
+      properties: project?.properties?.map((p) => ({
+        ...p,
+      })) || [],
     },
     board: {
-      id: board?._id.toString() || "",
+      id: board?._id?.toString() || "",
       root: board?.root || null,
-      name: board?.name || ""
-    }
+      name: board?.name || "",
+    },
   };
+
+  console.log("Workspace context data:", data);
+
+  return data;
 };
 
-export const newProject = async ({ name }: { name: string }) => {
-  const session = await auth();
-  if (!session || !session.user) return { success: false };
+  export const newProject = async ({ name }: { name: string }) => {
+    const session = await auth();
+    if (!session || !session.user) return { success: false };
 
-  await connect();
+    await connect();
 
-  const project = new Project({
-    name,
-    owner_id: session.user.id,
-  });
-
-  const savedProject = await project.save();
-
-  try {
-    const board = new Board({
-      name: "Board 1",
+    const project = new Project({
+      name,
       owner_id: session.user.id,
-      project_id: savedProject._id.toString(),
-      root: DEFAULT_PAGE,
     });
 
-    await board.save();
+    const savedProject = await project.save();
 
-    return { success: true, id: savedProject._id.toString() };
-  } catch (error) {
-    await Project.findByIdAndDelete(savedProject._id);
-    return { success: false };
-  }
-};
+    try {
+      const board = new Board({
+        name: "Board 1",
+        owner_id: session.user.id,
+        project_id: savedProject._id.toString(),
+        root: DEFAULT_PAGE,
+      });
 
-export const editProjectName = async ({projectID, name}: {projectID: string; name: string;}) => {
-  const session = await auth();
-  if (!session || !session.user) return { success: false };
-  await connect();
+      await board.save();
 
-  const updatedProject = await Project.findOneAndUpdate(
-    { _id: projectID, owner_id: session.user.id },
-    { $set: { name } },
-    { new: true }
-  );
-
-  if (!updatedProject) {
-    throw new Error("Project not found");
-  }
-
-  return { success: true };
-};
-
-export const deleteProject = async ({projectID}:{projectID:string}) => {
-  const session = await auth();
-  if (!session || !session.user) return { success: false };
-
-  await connect();
-
-  try {
-    // Delete all boards associated with the project
-    await Board.deleteMany({ project_id: projectID });
-    
-    // Delete the project itself
-    const deletedProject = await Project.findByIdAndDelete(projectID);
-    
-    if (!deletedProject) {
+      return { success: true, id: savedProject._id.toString() };
+    } catch (error) {
+      await Project.findByIdAndDelete(savedProject._id);
       return { success: false };
+    }
+  };
+
+  export const editProjectName = async ({ projectID, name }: { projectID: string; name: string; }) => {
+    const session = await auth();
+    if (!session || !session.user) return { success: false };
+    await connect();
+
+    const updatedProject = await Project.findOneAndUpdate(
+      { _id: projectID, owner_id: session.user.id },
+      { $set: { name } },
+      { new: true }
+    );
+
+    if (!updatedProject) {
+      throw new Error("Project not found");
     }
 
     return { success: true };
-  } catch (error) {
-    return { success: false };
-  }
-}
+  };
 
-export const getAllProjects = async () => {
-  const session = await auth();
-  if (!session || !session.user) return [];
+  export const deleteProject = async ({ projectID }: { projectID: string }) => {
+    const session = await auth();
+    if (!session || !session.user) return { success: false };
 
-  await connect();
+    await connect();
 
-  const projects = await Project.find(
-    { owner_id: new Types.ObjectId(session.user.id) }
-  )
-    .select("_id name createdAt updatedAt")
-    .lean();
+    try {
+      // Delete all boards associated with the project
+      await Board.deleteMany({ project_id: projectID });
 
-  return projects.map((p) => ({
-    id: (p._id as Types.ObjectId).toString(),
-    name: p.name as string,
-    createdAt: p.createdAt as Date,
-    updatedAt: p.updatedAt as Date,
-  }));
-};
+      // Delete the project itself
+      const deletedProject = await Project.findByIdAndDelete(projectID);
 
-export const saveBoardRoot = async ({boardID, root}: {boardID: string; root: INode;}) => {
-  await connect();
+      if (!deletedProject) {
+        return { success: false };
+      }
 
-  const updatedBoard = await Board.findByIdAndUpdate(
-    boardID, { root }, { new: true } // return updated doc
-  );
-
-  if (!updatedBoard) {
-    throw new Error("Board not found");
+      return { success: true };
+    } catch (error) {
+      return { success: false };
+    }
   }
 
-  return { success: true };
-};
+  export const getAllProjects = async () => {
+    const session = await auth();
+    if (!session || !session.user) return [];
 
-//save schedule data
-export const saveProjectData = async ({projectID, data}: {projectID: string; data: IProject["data"];}) => {
-  await connect();
+    await connect();
 
-  const updatedProject = await Project.findByIdAndUpdate(
-    projectID,
-    { $set: data },
-    { new: true }
-  );
+    const projects = await Project.find(
+      { owner_id: new Types.ObjectId(session.user.id) }
+    )
+      .select("_id name createdAt updatedAt")
+      .lean();
 
-  if (!updatedProject) {
-    throw new Error("Project not found");
-  }
+    return projects.map((p) => ({
+      id: (p._id as Types.ObjectId).toString(),
+      name: p.name as string,
+      createdAt: p.createdAt as Date,
+      updatedAt: p.updatedAt as Date,
+    }));
+  };
 
-  return updatedProject.toObject();
-};
+  export const saveBoardRoot = async ({ boardID, root }: { boardID: string; root: INode; }) => {
+    await connect();
 
-export const saveProjectProperties = async ({projectID, properties}: {projectID: string; properties: IProject["properties"];}) => {
-  await connect();
+    const updatedBoard = await Board.findByIdAndUpdate(
+      boardID, { root }, { new: true } // return updated doc
+    );
 
-  const updatedProject = await Project.findByIdAndUpdate(
-    projectID,
-    { $set: { properties } },
-    { new: true }
-  );
+    if (!updatedBoard) {
+      throw new Error("Board not found");
+    }
 
-  if (!updatedProject) {
-    throw new Error("Project not found");
-  }
+    return { success: true };
+  };
 
-  return updatedProject.toObject();
-};
+  //save schedule data
+  export const saveProjectData = async ({ projectID, data }: { projectID: string; data: IProject["data"]; }) => {
+    await connect();
+
+    const updatedProject = await Project.findByIdAndUpdate(
+      projectID,
+      { $set: { data } },
+      { new: true }
+    );
+
+    if (!updatedProject) {
+      throw new Error("Project not found");
+    }
+
+    return { success: true };
+  };
+
+  export const saveProjectProperties = async ({ projectID, properties }: { projectID: string; properties: IProject["properties"]; }) => {
+    await connect();
+
+    const updatedProject = await Project.findByIdAndUpdate(
+      projectID,
+      { $set: { properties } },
+      { new: true }
+    );
+
+    if (!updatedProject) {
+      throw new Error("Project not found");
+    }
+
+    return { success: true };
+  };

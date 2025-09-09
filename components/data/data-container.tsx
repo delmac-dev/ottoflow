@@ -1,8 +1,13 @@
 import { AppShell, Tabs, Text } from '@mantine/core'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import AIArea from './ai-area'
 import DataPanel from './data-panel'
 import SchemaPanel from './schema-panel'
+import { useDebouncedValue } from '@mantine/hooks'
+import { useStore } from 'zustand'
+import { scheduleStore } from '@/lib/stores/schedule.store'
+import { useSaveProjectData, useSaveProjectProperties } from '@/lib/query.hooks'
+import { appStore } from '@/lib/stores/app.store'
 
 const dataPanel = [
   { tab: '1', name: 'Data', content: DataPanel },
@@ -11,6 +16,49 @@ const dataPanel = [
 
 export default function DataContainer() {
   const [tab, setTab] = useState<string | null>('1');
+  const mountedData = React.useRef(false);
+  const mountedProperties = React.useRef(false);
+  const projectID = useStore(appStore, (s) => s.projectID);
+  const data = useStore(scheduleStore, (s) => s.data);
+  const setIsDataSaving = useStore(scheduleStore, (s) => s.setIsDataSaving);
+  const setIsPropertiesSaving = useStore(scheduleStore, (s) => s.setIsPropertiesSaving);
+  const [debouncedData] = useDebouncedValue(data, 5000);
+  const properties = useStore(scheduleStore, (s) => s.properties);
+  const [debouncedProperties] = useDebouncedValue(properties, 5000);
+  const { mutate: mutateData, isPending: savingData } = useSaveProjectData();
+  const { mutate: mutateProperties, isPending: savingProperties } = useSaveProjectProperties();
+
+  useEffect(() => {
+    if (!debouncedData) return;
+
+    // Skip the first run on mount
+    if (!mountedData.current) {
+      mountedData.current = true;
+      return;
+    }
+    if( !projectID ) return;
+    mutateData({ data: debouncedData, projectID: projectID });
+  }, [debouncedData]);
+  
+  useEffect(() => {
+    if (!debouncedProperties) return;
+
+    // Skip the first run on mount
+    if (!mountedProperties.current) {
+      mountedProperties.current = true;
+      return;
+    }
+    if( !projectID ) return;
+    mutateProperties({ properties: debouncedProperties, projectID: projectID });
+  }, [debouncedProperties]);
+
+  useEffect(() => {
+    setIsDataSaving(savingData);
+  }, [savingData, setIsDataSaving]);
+
+  useEffect(() => {
+    setIsPropertiesSaving(savingProperties);
+  }, [savingProperties, setIsPropertiesSaving]);
 
   return (
     <AppShell.Navbar>
