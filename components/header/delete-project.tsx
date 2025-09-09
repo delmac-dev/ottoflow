@@ -1,3 +1,5 @@
+"use client";
+
 import { useDeleteProject } from '@/lib/query.hooks';
 import { ActionIcon } from '@mantine/core'
 import { Trash } from 'lucide-react'

@@ -1,3 +1,5 @@
+"use client";
+
 import { ZSignIn, ZSignUp } from '@/lib/schema';
 import { ISignIn, ISignUp } from '@/lib/types';
 import { zodResolver } from '@hookform/resolvers/zod';

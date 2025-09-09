@@ -1,3 +1,5 @@
+"use client";
+
 import { boardStore } from '@/lib/stores/board.store'
 import { scheduleStore } from '@/lib/stores/schedule.store';
 import { AppShell, Center, Group, Loader, Text } from '@mantine/core'

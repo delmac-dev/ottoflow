@@ -1,7 +1,7 @@
 "use client";
 
 import { AppShell } from '@mantine/core';
-import React, { useEffect } from 'react'
+import React, { Suspense, useEffect } from 'react'
 import Header from './header';
 import Footer from './footer';
 import { useViewportSize } from '@mantine/hooks';
@@ -19,7 +19,15 @@ import { useGetWorkspaceContext } from '@/lib/query.hooks';
 import { scheduleStore } from '@/lib/stores/schedule.store';
 import NoActiveProject from '@/components/no-active-project';
 
-export default function TestPage() {
+export default function Page() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <PageContent />
+    </Suspense>
+  );
+}
+
+function PageContent() {
   const currentID = useSearchParams().get("id");
   const { width, height } = useViewportSize();
   const { data: session, status } = useSession();

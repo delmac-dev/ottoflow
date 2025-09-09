@@ -1,3 +1,5 @@
+"use client";
+
 import { useEditProjectName } from '@/lib/query.hooks';
 import { ZEditProjectName } from '@/lib/schema';
 import { IEditProjectName } from '@/lib/types';

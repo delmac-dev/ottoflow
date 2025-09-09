@@ -1,3 +1,5 @@
+"use client";
+
 import { useNewProject } from '@/lib/query.hooks';
 import { ZNewProject } from '@/lib/schema';
 import { INewProject } from '@/lib/types';

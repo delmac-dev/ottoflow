@@ -1,3 +1,5 @@
+"use client";
+
 import AuthButtons from '@/components/header/auth-buttons';
 import DeleteProject from '@/components/header/delete-project';
 import EditProject from '@/components/header/edit-project';

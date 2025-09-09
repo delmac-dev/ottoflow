@@ -1,3 +1,5 @@
+"use client";
+
 import { useGetAllProjects } from '@/lib/query.hooks'
 import { Select } from '@mantine/core'
 import { ChevronDown } from 'lucide-react';
