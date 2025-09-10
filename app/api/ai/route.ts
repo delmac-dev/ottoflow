@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
     }
 
     const result = await generateText({
-      model: google('gemini-2.5-pro'),
+      model: google(process.env.AI_MODEL || 'gemini-2.5-flash'),
       tools,
       messages: [
       {
