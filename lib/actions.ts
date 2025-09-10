@@ -146,6 +146,8 @@ export const deleteProfile = async () => {
  * @throws Error if the AI request fails or returns an error.
  */
 export const aiChat = async (data: { prompt?: string, url?: string, projectID: string }) => {
+  console.log("Sending AI request with data:", data);
+  console.log("Using base URL:", _baseUrl());
   const res = await fetch(_baseUrl() + "/api/ai", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -157,8 +159,9 @@ export const aiChat = async (data: { prompt?: string, url?: string, projectID: s
   });
 
   if (!res.ok) {
-    const errorData = await res.json();
-    throw new Error(errorData.error || "Failed to process AI request")
+    console.log("AI request failed:");
+    return { error: "AI request failed" };
+    // const errorData = await res.json();
   }
 
   const result = await res.json();
