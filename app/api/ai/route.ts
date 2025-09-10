@@ -118,6 +118,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ...toolResult });
 
   } catch (error: any) {
+    console.log("Error in /api/ai:", error);
     return NextResponse.json({
       error: "AI processing failed",
       details: error.message

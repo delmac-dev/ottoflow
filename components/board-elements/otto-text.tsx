@@ -14,7 +14,7 @@ type Props = {
 
 const OttoText = ({ node, optionalName, index=0, isClone=false }: Props) => {
   const data = useStore(scheduleStore, (s) => s.data);
-  const finalText = node.text?.type === "literal"? node.text.value : data[index][node.text?.key || ""];
+  const finalText = node.text?.type === "literal"? node.text.value : data?.[index]?.[node.text?.key || ""];
 
   return (
     <Text
