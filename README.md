@@ -1,5 +1,8 @@
 # OttoFlow
 
+<img width="1599" height="899" alt="bg" src="https://github.com/user-attachments/assets/3589bce8-b47d-4b81-a77b-29972c40e027" />
+
+
 An intelligent AI-powered timetable and schedule management application that extracts and organizes schedule data from PDF documents with visual board editing capabilities.
 
 ## Features
